@@ -1,5 +1,8 @@
 import express from 'express';
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 3001;
@@ -9,7 +12,7 @@ app.get('/api/orders', async (req, res) => {
   const response = await fetch(shopifyUrl, {
     method: 'GET',
     headers: {
-      'X-Shopify-Access-Token': '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',
+      'X-Shopify-Access-Token': process.env.SHOPIFY_API_TOKEN,
       'Content-Type': 'application/json',
     },
   });
