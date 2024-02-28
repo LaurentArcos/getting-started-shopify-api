@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:3001/api/orders')
@@ -28,12 +29,21 @@ const Orders = () => {
     setOrders(updatedOrders);
   };
 
+  const filteredOrders = orders.filter(order => order.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
     <div>
-      <h1>Commandes</h1>
-      {orders.length > 0 ? (
+      <div className='search'>
+        <input
+          type="number"
+          placeholder="Rechercher par numéro de commande"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      {filteredOrders.length > 0 ? (
         <div>
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <React.Fragment key={order.id}>
               <div className='order' onClick={() => toggleOrderDetails(order.id)}>
                 <div className="order-info">

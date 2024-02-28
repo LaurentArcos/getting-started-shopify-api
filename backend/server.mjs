@@ -8,7 +8,7 @@ const app = express();
 const port = 3001;
 
 app.get('/api/orders', async (req, res) => {
-  const shopifyUrl = 'https://456c31-2.myshopify.com/admin/api/2023-10/orders.json?status=any';
+  const shopifyUrl = 'https://456c31-2.myshopify.com/admin/api/2024-01/orders.json?status=any';
   const response = await fetch(shopifyUrl, {
     method: 'GET',
     headers: {

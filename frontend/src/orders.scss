@@ -1,4 +1,4 @@
-h1 {
+.search {
   display: flex;
   font-size: 2rem;
   font-weight: bold;
@@ -6,6 +6,17 @@ h1 {
   background-color: #15184C;
   padding: 20px;
   justify-content: center;
+  align-items: center;
+}
+
+.search input {
+  font-size: 1.1rem;
+  width: 320px;
+  padding: 10px;
+  background-color: #15184C;
+  color: white;
+  border: none;
+  outline: none;
 }
 
 .order {
@@ -13,7 +24,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   background-color: #F1F1F1;
-  padding: 15px 20px;
+  padding: 15px 30px;
   margin-top: 3px;
   margin-bottom: 0;
   cursor: pointer;
