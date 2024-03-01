@@ -1,0 +1,40 @@
+@use 'reset';
+@use 'vars';
+@use 'Header';
+@use 'Orders';
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('../fonts/Raleway-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo';
+  src: url('../fonts/Exo-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo-Thin';
+  src: url('../fonts/Exo-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo-Light';
+  src: url('../fonts/Exo-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo-Bold';
+  src: url('../fonts/Exo-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo-Extrabold';
+  src: url('../fonts/Exo-ExtraBold.ttf') format('truetype');
+}
+
+body {
+	width:100%;
+	height:100%;
+	font-family: "Exo";
+}
