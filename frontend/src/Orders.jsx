@@ -117,15 +117,9 @@ const Orders = () => {
                   </div>
                 </div>
               </div>
+              
               {expandedOrderId === order.id && (
                 <div className="order-details">
-                  <button
-                    onClick={() =>
-                      createFulfillment(order.id, order.line_items)
-                    }
-                  >
-                    Marquer comme traitée
-                  </button>
                   <div className="order-items">
                     {order.line_items.map((item) => (
                       <div className="item" key={item.id}>
@@ -144,21 +138,26 @@ const Orders = () => {
                       </div>
                     ))}
                   </div>
-                  <div>
-                    <div className="customer-name">
-                      {order.shipping_address.first_name} {order.shipping_address.last_name}
-                    </div>
-                    <div className="customer-name">
-                      {order.shipping_address.address1}
-                    </div>
-                    <div className="customer-name">
-                      {order.shipping_address.zip}
-                    </div>
-                    <div className="customer-name">
-                      {order.shipping_address.city}
-                    </div>
+                  <div className="order-button">
+                    <button onClick={() => createFulfillment(order.id, order.line_items)}>
+                      Marquer comme traitée
+                    </button>
                   </div>
                   <div className="shipping-details">
+                    <div className="shipping-address">
+                      {order.shipping_address.first_name} {order.shipping_address.last_name}
+                    </div>
+                    <div className="shipping-address">
+                      {order.shipping_address.address1}
+                    </div>
+                    <div className="shipping-address">
+                      {order.shipping_address.zip}
+                    </div>
+                    <div className="shipping-address">
+                      {order.shipping_address.city}
+                    </div>
+                  
+                  <div className="shipping-method">
                     {order.shipping_lines.map((line, index) => (
                       <div key={index}>
                         <div>Mode de livraison : {line.title}</div>
@@ -166,7 +165,7 @@ const Orders = () => {
                         <div>Prix : {line.price} €</div>
                       </div>
                     ))}
-                  </div>
+                  </div></div>
                 </div>
               )}
             </React.Fragment>
