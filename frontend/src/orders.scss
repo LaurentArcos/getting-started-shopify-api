@@ -50,6 +50,12 @@
   text-align: right;
 }
 
+.shipping-details {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-top: 10px;
+}
+
 .order-status {
   display: flex;
   align-items: center;
@@ -109,6 +115,10 @@ input {
 }
 
 .item-sku {
+  font-size: 0.8rem;
+}
+
+.item-id {
   font-size: 0.8rem;
 }
 

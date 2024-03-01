@@ -1,24 +1,22 @@
 import express from 'express';
-import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import ordersRoutes from './routes/ordersRoutes.mjs';
+import locationsRoutes from './routes/locationsRoutes.mjs';
+import productsRoutes from './routes/productsRoutes.mjs';
 
 dotenv.config();
 
 const app = express();
-const port = 3001;
+app.use(express.json());
+app.use(cors());
 
-app.get('/api/orders', async (req, res) => {
-  const shopifyUrl = 'https://456c31-2.myshopify.com/admin/api/2024-01/orders.json?status=any';
-  const response = await fetch(shopifyUrl, {
-    method: 'GET',
-    headers: {
-      'X-Shopify-Access-Token': process.env.SHOPIFY_API_TOKEN,
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await response.json();
-  res.send(data);
-});
+const port = process.env.PORT || 3001;
+
+// Utilisation des routeurs
+app.use('/api/orders', ordersRoutes);
+app.use('/api/locations', locationsRoutes);
+app.use('/api/products', productsRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
