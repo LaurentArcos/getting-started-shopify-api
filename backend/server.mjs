@@ -4,6 +4,7 @@ import cors from 'cors';
 import ordersRoutes from './routes/ordersRoutes.mjs';
 import locationsRoutes from './routes/locationsRoutes.mjs';
 import productsRoutes from './routes/productsRoutes.mjs';
+import metafieldsRoutes from './routes/metafieldsRoutes.mjs'
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const port = process.env.PORT || 3001;
 app.use('/api/orders', ordersRoutes);
 app.use('/api/locations', locationsRoutes);
 app.use('/api/products', productsRoutes);
+app.use('/api/metafields', metafieldsRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -4,7 +4,8 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationId, setLocationId] = useState(null); 
+  const [locationId, setLocationId] = useState(null);
+  const [metafields, setMetafields] = useState({}); 
 
   useEffect(() => {
 
@@ -25,6 +26,21 @@ const Orders = () => {
       })
       .catch((error) => console.error("Error fetching locations:", error));
   }, []);
+
+  const fetchMetafieldsForProduct = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/metafields/${productId}`);
+      const data = await response.json();
+      
+      const entrepotMetafield = data.metafields.find(mf => mf.namespace === "localisation" && mf.key === "entrepot");
+      setMetafields((prevMetafields) => ({
+        ...prevMetafields,
+        [productId]: entrepotMetafield?.value 
+      }));
+    } catch (error) {
+      console.error("Error fetching metafields:", error);
+    }
+  };
 
   const updateOrderFulfillmentStatus = (orderId) => {
     setOrders(
@@ -64,13 +80,19 @@ const Orders = () => {
       .catch((error) => console.error("Error creating fulfillment:", error));
   };
 
-  const filteredOrders = orders.filter((order) =>
-    order.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  
   const toggleOrderDetails = (id) => {
     setExpandedOrderId((prevState) => (prevState === id ? null : id));
+    // Récupération des métafields pour chaque produit de la commande
+    const order = orders.find(order => order.id === id);
+    order?.line_items.forEach(item => {
+      fetchMetafieldsForProduct(item.product_id);
+    });
   };
+
+
+  const filteredOrders = orders.filter((order) => order.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
 
   return (
     <div>
@@ -135,6 +157,9 @@ const Orders = () => {
                         <div className="item-details">
                           <span className="item-id">(id: {item.product_id})</span>
                         </div>
+                        <div className="item-details">
+                          <span className="item-id">(Métafield Value: {metafields[item.product_id]})</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -145,7 +170,7 @@ const Orders = () => {
                   </div>
                   <div className="shipping-details">
                     <div className="shipping-address">
-                      {order.shipping_address.first_name} {order.shipping_address.last_name}
+                      <span>{order.shipping_address.first_name} {order.shipping_address.last_name}</span>
                     </div>
                     <div className="shipping-address">
                       {order.shipping_address.address1}
@@ -160,7 +185,7 @@ const Orders = () => {
                   <div className="shipping-method">
                     {order.shipping_lines.map((line, index) => (
                       <div key={index}>
-                        <div>Mode de livraison : {line.title}</div>
+                        <div><span>Mode de livraison : {line.title}</span></div>
                         <div>Code : {line.code}</div>
                         <div>Prix : {line.price} €</div>
                       </div>

@@ -1,8 +1,5 @@
 import express from 'express';
 const router = express.Router();
-import fetch from 'node-fetch';
-import dotenv from 'dotenv';
-dotenv.config();
 
 // Route pour récupérer tous les produits et leurs variantes
 router.get('/', async (req, res) => {
