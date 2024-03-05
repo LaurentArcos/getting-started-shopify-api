@@ -1,0 +1,44 @@
+@use 'vars';
+
+.sessions-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F1F1F1;
+  padding: 15px 30px;
+  margin-top: 3px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.sessions-list-name strong {
+  font-family: 'Exo-Bold';
+  font-size: 1.5rem;
+  margin: 1; /* Ajout d'une marge en bas */
+}
+
+.sessions-list-name :nth-child(2) {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.sessions-list-name p:last-child {
+  font-style: italic;
+  font-size: 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.sessions-list-details {
+  background-color: white; /* Fond blanc pour les détails */
+  padding-top: 10px;
+  
+}
+
+.sessions-list-delete-button button{
+  font-family: 'Exo-bold';
+  margin: 10px;
+  border: none;
+  padding: 10px;
+  color: vars.$activeColor;
+  cursor: pointer;
+}

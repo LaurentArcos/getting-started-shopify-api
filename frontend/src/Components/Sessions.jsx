@@ -12,11 +12,17 @@ const Sessions = () => {
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
       .then((response) => response.json())
-      .then((data) => setOrders(data.orders || []))
+      .then(data => {
+        // Filtrer ici les commandes pour ne pas inclure celles déjà en session
+        const sessionOrderIds = new Set(sessions.flatMap(session => session.orderIds));
+        const filteredOrders = data.orders.filter(order => !sessionOrderIds.has(order.id));
+        setOrders(filteredOrders);
+      })
       .catch((error) => console.error("Error fetching orders:", error));
-  }, []);
+  }, [sessions]);
 
   const handleSelectOrder = (orderId) => {
+    
     setSelectedOrders((prevSelectedOrders) => {
       const newSelectedOrders = new Set(prevSelectedOrders);
       if (newSelectedOrders.has(orderId)) {
@@ -31,6 +37,11 @@ const Sessions = () => {
   const handleCreateSession = () => {
     setIsCreatingSession(true);
   };
+
+  const existingOrderIdsInSessions = sessions.reduce((acc, session) => {
+    session.orderIds.forEach((orderId) => acc.add(orderId));
+    return acc;
+  }, new Set());
 
   const handleSaveSession = () => {
     if (!sessionName.trim() || selectedOrders.size === 0) {
@@ -55,7 +66,7 @@ const Sessions = () => {
       {orders.length > 0 ? (
 
         <div>
-          {orders.map((order) => (
+          {orders.filter(order => !existingOrderIdsInSessions.has(order.id)).map((order) => (
 
             <div key={order.id} className="sessions-orders">
 

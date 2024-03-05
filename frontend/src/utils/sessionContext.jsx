@@ -10,15 +10,20 @@ export const SessionProvider = ({ children }) => {
 
   const addSession = (sessionName, orderIds) => {
     const newSession = {
-        name: sessionName,
-        orderIds,
-        createdAt: new Date()
+      id: `session-${new Date().getTime()}`,
+      name: sessionName,
+      orderIds,
+      createdAt: new Date(),
     };
     setSessions((prevSessions) => [...prevSessions, newSession]);
-};
+  };
+
+  const removeSession = (sessionId) => {
+    setSessions((prevSessions) => prevSessions.filter(session => session.id !== sessionId));
+  };
 
   return (
-    <SessionContext.Provider value={{ sessions, addSession }}>
+    <SessionContext.Provider value={{ sessions, addSession, removeSession }}>
       {children}
     </SessionContext.Provider>
   );
