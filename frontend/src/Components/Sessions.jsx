@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSessions } from '../utils/sessionContext';
+
 
 const Sessions = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrders, setSelectedOrders] = useState(new Set());
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [sessionName, setSessionName] = useState("");
+  const { sessions, addSession } = useSessions();
 
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
@@ -24,9 +29,22 @@ const Sessions = () => {
   };
 
   const handleCreateSession = () => {
-    console.log(`Session creation button for ${selectedOrders.size} orders`);
+    setIsCreatingSession(true);
   };
 
+  const handleSaveSession = () => {
+    if (!sessionName.trim() || selectedOrders.size === 0) {
+        console.error("Nom de session vide ou aucune commande sélectionnée.");
+        return; 
+    }
+
+    const orderIds = Array.from(selectedOrders);
+    addSession(sessionName, orderIds);
+
+    setIsCreatingSession(false);
+    setSessionName("");
+    setSelectedOrders(new Set());
+};
   return (
     <div>
 
@@ -69,11 +87,31 @@ const Sessions = () => {
           ))}
         </div>
 
-      ) : (
-        <p>Aucune commande trouvée</p>
-      )}
+) : (
+  <p>Aucune commande trouvée</p>
+)}
+
+{isCreatingSession && (
+  <React.Fragment>
+    <div className="modal-backdrop"></div>
+    <div className="session-modal">
+      <h2>Créer une nouvelle session</h2>
+      <input
+        type="text"
+        placeholder="Nom de la session"
+        value={sessionName}
+        onChange={(e) => setSessionName(e.target.value)}
+      />
+      <p>Créer la session &quot;{sessionName}&quot; pour {selectedOrders.size} commandes</p>
+      <div>
+        <button onClick={handleSaveSession}>Valider</button>
+        <button onClick={() => setIsCreatingSession(false)}>Annuler</button>
+      </div>
     </div>
-  );
+  </React.Fragment>
+)}
+</div>
+);
 };
 
 export default Sessions;

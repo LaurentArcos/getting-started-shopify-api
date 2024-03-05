@@ -64,3 +64,57 @@
  cursor: pointer;
  transform: scale(1.6);
 }
+
+.session-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 30%;
+  min-height: 30%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 50px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+}
+
+.session-modal h2 {
+  font-size: 2rem;
+  font-family: "Exo-bold";
+  color: vars.$colorSeagale;
+}
+
+.session-modal input {
+  font-size: 1.1rem;
+  margin: 2rem;
+  padding: 1rem 2rem;
+  font-family: "Exo";
+  color: vars.$colorSeagale;
+}
+
+.session-modal p {
+  font-family: "Exo-bold";
+  color: vars.$colorSeagale;
+}
+
+.session-modal button {
+  font-family: "Exo-bold";
+  background-color: white;
+  color: vars.$colorSeagale;
+  margin: 2rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 999; 
+}
