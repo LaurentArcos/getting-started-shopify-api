@@ -80,12 +80,16 @@
   margin-top: 10px;
 }
 
-.order-button {
+.order-button button{
   display: flex;
+  font-family: 'Exo';
+  font-size: 1.1rem;
   justify-content: center; 
   align-items: start;
   flex-direction: column;
-  width: 10%;
+  width: 100%;
+  background-color: vars.$colorSeagale;
+  color: white;
 }
 
 .order-button button{

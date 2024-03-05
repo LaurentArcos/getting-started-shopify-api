@@ -11,6 +11,10 @@
   cursor: pointer;
 }
 
+.sessions-list-name {
+  margin: 10px;
+}
+
 .sessions-list-name strong {
   font-family: 'Exo-Bold';
   font-size: 1.5rem;
@@ -29,16 +33,42 @@
 }
 
 .sessions-list-details {
-  background-color: white; /* Fond blanc pour les détails */
+  background-color: white; 
   padding-top: 10px;
   
 }
 
-.sessions-list-delete-button button{
+.sessions-list-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.sessions-list-buttons button:nth-child(1){
   font-family: 'Exo-bold';
-  margin: 10px;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  margin: 0 10px;
   border: none;
-  padding: 10px;
+  padding: 0 0 10px 0;
+  color: vars.$colorSeagale;
+  cursor: pointer;
+}
+
+.sessions-list-buttons button:nth-child(2){
+  font-family: 'Exo-bold';
+  margin: 0 10px;
+  border: none;
+  padding: 0 10px  0 0;
   color: vars.$activeColor;
+  cursor: pointer;
+}
+
+.details-button{
+  font-family: 'Exo-bold';
+  margin: 10px 50px;
+  padding: 10px;
+  color: white;
+  background-color: vars.$colorSeagale;
+  border-radius: 5px;
   cursor: pointer;
 }
