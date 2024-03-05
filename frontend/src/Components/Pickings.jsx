@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { useSessions } from "../utils/sessionContext";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Pickings = () => {
   const [expandedSessionId, setExpandedSessionId] = useState(null);
   const [orders, setOrders] = useState([]);
   const { sessions, removeSession } = useSessions();
+
+  const navigate = useNavigate();
+
+  const navigateToJacky = (orderIds) => {
+    const selectedOrders = orderIds.map((orderId) => orders.find((order) => order.id === orderId));
+    navigate('/jacky', { state: { selectedOrders } });
+  };
 
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
@@ -54,9 +61,7 @@ const Pickings = () => {
               })}
             </div>
           )}
-            <Link to="/jacky">
-              <button className="details-button">Afficher Jacky</button>
-            </Link>
+            <button onClick={() => navigateToJacky(session.orderIds)} className="details-button">Afficher Jacky</button>
           <div className="sessions-list-buttons">
             <button onClick={() => handleToggleDetails(session.id)}>
               {expandedSessionId === session.id ? "Masquer Détails" : "Voir Détails Session"}
