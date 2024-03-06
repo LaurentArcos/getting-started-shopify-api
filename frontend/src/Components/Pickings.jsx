@@ -81,14 +81,14 @@ const Pickings = () => {
           )}
           <button
             onClick={() => navigateToJacky(session.orderIds, session.name)}
-            className="details-button"
+            className="jacky-button"
           >
             Afficher Jacky
           </button>
           {isFulfilled ? (
               <img src="./check.png" alt="Fulfilled" style={{ width: "60px", marginRight: "20px" }}/>
             ) : (
-              <button onClick={() => markOrdersAsFulfilled(session.orderIds)}>Marquer comme Fulfilled</button>
+              <button className="fulfilled-button" onClick={() => markOrdersAsFulfilled(session.orderIds)}>Marquer comme traitée</button>
             )}
           <div className="sessions-list-buttons">
             <button onClick={() => handleToggleDetails(session.id)}>
