@@ -1,0 +1,19 @@
+@use 'vars';
+
+
+
+.jacky table {
+  width: 70%;
+  border-collapse: collapse;
+  margin: 4rem auto;
+}
+
+.jacky th, td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.jacky th {
+  background-color: #f1f1f1;
+}

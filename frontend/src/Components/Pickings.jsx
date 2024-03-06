@@ -10,9 +10,8 @@ const Pickings = () => {
   const navigate = useNavigate();
 
   const navigateToJacky = (orderIds) => {
-    const selectedOrders = orderIds.map((orderId) => orders.find((order) => order.id === orderId));
-    navigate('/jacky', { state: { selectedOrders } });
-  };
+    navigate("/jacky", { state: { selectedOrderIds: orderIds } });
+};
 
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
@@ -52,19 +51,32 @@ const Pickings = () => {
                 return (
                   order && (
                     <div className="item" key={orderId}>
-                    <div className="item-name">
-                      Commande #{order.id}: {order.customer.first_name} {order.customer.last_name} - {order.line_items.reduce((total, item) => total + item.quantity, 0)} articles - {order.current_subtotal_price} €
-                    </div>
+                      <div className="item-name">
+                        Commande #{order.name} - {order.customer.first_name}{" "}
+                        {order.customer.last_name} -{" "}
+                        {order.line_items.reduce(
+                          (total, item) => total + item.quantity,
+                          0
+                        )}{" "}
+                        articles - {order.current_subtotal_price} €
+                      </div>
                     </div>
                   )
                 );
               })}
             </div>
           )}
-            <button onClick={() => navigateToJacky(session.orderIds)} className="details-button">Afficher Jacky</button>
+          <button
+            onClick={() => navigateToJacky(session.orderIds)}
+            className="details-button"
+          >
+            Afficher Jacky
+          </button>
           <div className="sessions-list-buttons">
             <button onClick={() => handleToggleDetails(session.id)}>
-              {expandedSessionId === session.id ? "Masquer Détails" : "Voir Détails Session"}
+              {expandedSessionId === session.id
+                ? "Masquer Détails"
+                : "Voir Détails Session"}
             </button>
             <button onClick={() => handleRemoveSession(session.id)}>
               Supprimer

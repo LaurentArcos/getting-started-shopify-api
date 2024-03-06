@@ -1,98 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext } from "react";
+import { DataContext } from "../utils/dataContext"; 
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
+  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext); // Utilisez votre contexte
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationId, setLocationId] = useState(null);
-  const [metafields, setMetafields] = useState({}); 
-
-  useEffect(() => {
-
-    fetch("http://localhost:3001/api/orders")
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data.orders || []);
-      })
-      .catch((error) => console.error("Error fetching orders:", error));
-
-
-    fetch("http://localhost:3001/api/locations") 
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.locations && data.locations.length > 0) {
-          setLocationId(data.locations[0].id); 
-        }
-      })
-      .catch((error) => console.error("Error fetching locations:", error));
-  }, []);
-
-  const fetchMetafieldsForProduct = async (productId) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/metafields/${productId}`);
-      const data = await response.json();
-      
-      const entrepotMetafield = data.metafields.find(mf => mf.namespace === "localisation" && mf.key === "entrepot");
-      setMetafields((prevMetafields) => ({
-        ...prevMetafields,
-        [productId]: entrepotMetafield?.value 
-      }));
-    } catch (error) {
-      console.error("Error fetching metafields:", error);
-    }
-  };
-
-  const updateOrderFulfillmentStatus = (orderId) => {
-    setOrders(
-      orders.map((order) => {
-        if (order.id === orderId) {
-          return { ...order, fulfillment_status: "fulfilled" };
-        }
-        return order;
-      })
-    );
-  };
-
-  const createFulfillment = (orderId, lineItems) => {
-    if (!locationId) {
-      console.error("Location ID is not set");
-      return;
-    }
-
-    fetch(`http://localhost:3001/api/orders/${orderId}/fulfillment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        location_id: locationId,
-        line_items: lineItems.map(item => ({
-          id: item.id,
-          quantity: item.quantity,
-        })),
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fulfillment created:", data);
-        updateOrderFulfillmentStatus(orderId); // Mise à jour de l'état de la commande
-      })
-      .catch((error) => console.error("Error creating fulfillment:", error));
-  };
-
-  
-  const toggleOrderDetails = (id) => {
-    setExpandedOrderId((prevState) => (prevState === id ? null : id));
-    // Récupération des métafields pour chaque produit de la commande
-    const order = orders.find(order => order.id === id);
-    order?.line_items.forEach(item => {
-      fetchMetafieldsForProduct(item.product_id);
-    });
-  };
 
 
   const filteredOrders = orders.filter((order) => order.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
+  const toggleOrderDetails = (id) => {
+    setExpandedOrderId((prevState) => (prevState === id ? null : id));
+  
+    if(expandedOrderId !== id) {
+      const order = orders.find((order) => order.id === id);
+      order?.line_items.forEach((item) => {
+        fetchMetafieldsForProduct(item.product_id);
+      });
+    }
+  };
 
   return (
     <div>
@@ -163,11 +89,7 @@ const Orders = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="order-button">
-                    <button onClick={() => createFulfillment(order.id, order.line_items)}>
-                      Marquer comme traitée
-                    </button>
-                  </div>
+
                   <div className="shipping-details">
                     <div className="shipping-address">
                       <span>{order.shipping_address.first_name} {order.shipping_address.last_name}</span>

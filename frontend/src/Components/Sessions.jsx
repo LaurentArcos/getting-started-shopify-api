@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useSessions } from '../utils/sessionContext';
+import { useData } from '../utils/dataContext';
 
 
 const Sessions = () => {
-  const [orders, setOrders] = useState([]);
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const { sessions, addSession } = useSessions();
+  const { orders } = useData();
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/orders")
-      .then((response) => response.json())
-      .then(data => {
-        // Filtrer ici les commandes pour ne pas inclure celles déjà en session
-        const sessionOrderIds = new Set(sessions.flatMap(session => session.orderIds));
-        const filteredOrders = data.orders.filter(order => !sessionOrderIds.has(order.id));
-        setOrders(filteredOrders);
-      })
-      .catch((error) => console.error("Error fetching orders:", error));
-  }, [sessions]);
+    const sessionOrderIds = new Set(sessions.flatMap(session => session.orderIds));
+    const newFilteredOrders = orders.filter(order => !sessionOrderIds.has(order.id));
+    setFilteredOrders(newFilteredOrders);
+}, [sessions, orders]);
 
   const handleSelectOrder = (orderId) => {
     
@@ -63,10 +59,10 @@ const Sessions = () => {
         <button className="session-button" onClick={handleCreateSession}>Créer session</button>
       </div>
 
-      {orders.length > 0 ? (
+      {filteredOrders.length > 0 ? (
 
         <div>
-          {orders.filter(order => !existingOrderIdsInSessions.has(order.id)).map((order) => (
+          {filteredOrders.filter(order => !existingOrderIdsInSessions.has(order.id)).map((order) => (
 
             <div key={order.id} className="sessions-orders">
 
