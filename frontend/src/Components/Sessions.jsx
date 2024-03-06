@@ -56,7 +56,7 @@ const Sessions = () => {
     <div>
 
       <div className="sessions-header">
-        <button className="session-button" onClick={handleCreateSession}>Créer session</button>
+        <button className="session-button" onClick={handleCreateSession}>Créer session Picking</button>
       </div>
 
       {filteredOrders.length > 0 ? (

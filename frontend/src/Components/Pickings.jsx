@@ -1,17 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useSessions } from "../utils/sessionContext";
+import { DataContext } from "../utils/dataContext";
 import { useNavigate } from "react-router-dom";
 
 const Pickings = () => {
   const [expandedSessionId, setExpandedSessionId] = useState(null);
   const [orders, setOrders] = useState([]);
   const { sessions, removeSession } = useSessions();
+  const { updateOrderFulfillmentStatus } = useContext(DataContext);
+  const [isFulfilled, setIsFulfilled] = useState(false);
 
   const navigate = useNavigate();
 
-  const navigateToJacky = (orderIds) => {
-    navigate("/jacky", { state: { selectedOrderIds: orderIds } });
-};
+  const navigateToJacky = (orderIds, sessionName) => {
+    navigate("/jacky", { state: { selectedOrderIds: orderIds, sessionName: sessionName } });
+  };
+
+  const markOrdersAsFulfilled = (orderIds) => {
+    const confirmMessage = "Êtes-vous sûr de vouloir marquer ces commandes comme fulfilled ?";
+    if (window.confirm(confirmMessage)) {
+      orderIds.forEach(orderId => {
+        updateOrderFulfillmentStatus(orderId, 'fulfilled');
+      });
+      setIsFulfilled(true); // Mettre à jour l'état pour refléter que les commandes sont marquées comme fulfilled
+    }
+  };
 
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
@@ -67,11 +80,16 @@ const Pickings = () => {
             </div>
           )}
           <button
-            onClick={() => navigateToJacky(session.orderIds)}
+            onClick={() => navigateToJacky(session.orderIds, session.name)}
             className="details-button"
           >
             Afficher Jacky
           </button>
+          {isFulfilled ? (
+              <img src="./check.png" alt="Fulfilled" style={{ width: "60px", marginRight: "20px" }}/>
+            ) : (
+              <button onClick={() => markOrdersAsFulfilled(session.orderIds)}>Marquer comme Fulfilled</button>
+            )}
           <div className="sessions-list-buttons">
             <button onClick={() => handleToggleDetails(session.id)}>
               {expandedSessionId === session.id

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { DataContext } from "../utils/dataContext"; 
 
 const Orders = () => {
-  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext); // Utilisez votre contexte
+  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext); 
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
