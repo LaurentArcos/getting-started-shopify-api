@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Route pour récupérer tous les produits et leurs variantes
 router.get('/', async (req, res) => {
-  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2024-01/products.json`;
+  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2023-10/products.json`;
   try {
     const response = await fetch(shopifyUrl, {
       method: 'GET',

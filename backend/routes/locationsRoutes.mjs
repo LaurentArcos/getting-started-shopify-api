@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2024-01/locations.json`;
+  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2023-10/locations.json`;
   const response = await fetch(shopifyUrl, {
     method: 'GET',
     headers: {

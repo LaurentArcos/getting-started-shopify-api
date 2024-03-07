@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/:productId', async (req, res) => {
   const productId = req.params.productId;
-  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2023-07/metafields.json?metafield[owner_id]=${productId}&metafield[owner_resource]=product`;
+  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2023-10/metafields.json?metafield[owner_id]=${productId}&metafield[owner_resource]=product`;
 
   try {
     const response = await fetch(shopifyUrl, {
