@@ -20,6 +20,10 @@ const Orders = () => {
     }
   };
 
+  const handleEtiquetteClick = () => {
+    alert("Cette fonctionnalité n'est pas encore disponible.");
+  };
+
   return (
     <div>
       <div className="search">
@@ -104,15 +108,19 @@ const Orders = () => {
                       {order.shipping_address.city}
                     </div>
                   
-                  <div className="shipping-method">
-                    {order.shipping_lines.map((line, index) => (
-                      <div key={index}>
-                        <div><span>Mode de livraison : {line.title}</span></div>
-                        <div>Code : {line.code}</div>
-                        <div>Prix : {line.price} €</div>
-                      </div>
-                    ))}
-                  </div></div>
+                    <div className="shipping-method">
+                      {order.shipping_lines.map((line, index) => (
+                        <div key={index}>
+                          <div><span>Mode de livraison : {line.title}</span></div>
+                          <div>Code : {line.code}</div>
+                          <div>Prix : {line.price} €</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <button className="etiquette-button" onClick={handleEtiquetteClick}>Voir étiquette</button>
+                  </div>
                 </div>
               )}
             </React.Fragment>

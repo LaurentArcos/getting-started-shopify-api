@@ -8,7 +8,7 @@ const Pickings = () => {
   const [orders, setOrders] = useState([]);
   const { sessions, removeSession } = useSessions();
   const { updateOrderFulfillmentStatus } = useContext(DataContext);
-  const [isFulfilled, setIsFulfilled] = useState(false);
+  const [fulfilledSessions, setFulfilledSessions] = useState({});
 
   const navigate = useNavigate();
 
@@ -16,13 +16,16 @@ const Pickings = () => {
     navigate("/jacky", { state: { selectedOrderIds: orderIds, sessionName: sessionName } });
   };
 
-  const markOrdersAsFulfilled = (orderIds) => {
+  const markOrdersAsFulfilled = (orderIds, sessionId) => {
     const confirmMessage = "Êtes-vous sûr de vouloir marquer ces commandes comme fulfilled ?";
     if (window.confirm(confirmMessage)) {
       orderIds.forEach(orderId => {
         updateOrderFulfillmentStatus(orderId, 'fulfilled');
       });
-      setIsFulfilled(true); // Mettre à jour l'état pour refléter que les commandes sont marquées comme fulfilled
+      setFulfilledSessions((prev) => ({
+        ...prev,
+        [sessionId]: true,
+      }));
     }
   };
 
@@ -43,6 +46,11 @@ const Pickings = () => {
     );
     if (isConfirmed) {
       removeSession(sessionId);
+      setFulfilledSessions((prev) => {
+        const newState = { ...prev };
+        delete newState[sessionId];
+        return newState;
+      });
     }
   };
 
@@ -84,12 +92,12 @@ const Pickings = () => {
             className="jacky-button"
           >
             Afficher Jacky
-          </button>
-          {isFulfilled ? (
-              <img src="./check.png" alt="Fulfilled" style={{ width: "60px", marginRight: "20px" }}/>
-            ) : (
-              <button className="fulfilled-button" onClick={() => markOrdersAsFulfilled(session.orderIds)}>Marquer comme traitée</button>
-            )}
+            </button>
+          {fulfilledSessions[session.id] ? (
+            <img src="./check.png" alt="Fulfilled" style={{ width: "60px", marginRight: "20px" }}/>
+          ) : (
+            <button className="fulfilled-button" onClick={() => markOrdersAsFulfilled(session.orderIds, session.id)}>Marquer comme traitée</button>
+          )}
           <div className="sessions-list-buttons">
             <button onClick={() => handleToggleDetails(session.id)}>
               {expandedSessionId === session.id

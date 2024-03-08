@@ -143,3 +143,17 @@ input {
 .shipping-method span{
   font-weight: bold;
 }
+
+.etiquette-button {
+  font-family: 'Exo-bold';
+  padding: 10px;
+  margin-right: 50px;
+  color: white;
+  background-color: vars.$colorSeagale;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.etiquette-button:hover {
+  scale: 1.1;
+}
