@@ -102,7 +102,7 @@ const Jacky = () => {
             <th>Ref</th>
             <th>Produit</th>
             <th>Couleur</th>
-            {sizes.map(() => <th key={sizes}></th>)}
+            {sizes.map((size, index) => <th key={`size-header-${index}`}></th>)}
             <th></th>
             <th></th>
           </tr>
