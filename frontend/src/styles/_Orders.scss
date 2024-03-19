@@ -27,6 +27,20 @@
   font-weight: normal;
 }
 
+.toggle-icon {
+  width: 24px;
+  height: 24px; 
+ vertical-align: bottom;
+ padding: 0;
+ border: none;
+ background: none;
+}
+
+.product-quantity {
+  display: inline; 
+  margin-right: 15px; 
+}
+
 .order {
   display: flex;
   justify-content: space-between;
@@ -156,4 +170,42 @@ input {
 
 .etiquette-button:hover {
   scale: 1.1;
+}
+
+
+table {
+  max-width: 100%;
+  margin: 2rem auto; 
+  border-collapse: collapse;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  border-radius: 5px; 
+  overflow: hidden; 
+}
+
+th {
+  background-color: vars.$colorSeagale; 
+  color: white;
+  padding: 20px;
+  font-family: 'Exo-bold';
+}
+
+.th2 {
+  background-color: #15184c31;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2; 
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff; 
+}
+
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th, td {
+  text-align: center;
 }

@@ -1,16 +1,12 @@
-@use 'vars';
-
-
-
-.jacky table {
+.jacky {
   width: 70%;
   border-collapse: collapse;
   margin: 3rem auto;
 }
 
-.jacky th, td {
+.jacky th, .jacky td {
   padding: 8px;
-  border: 1px solid #ccc;
+  // border: 1px solid #ccc;
   text-align: left;
 }
 
@@ -29,10 +25,10 @@
   font-size: 1rem;
   padding: 10px 20px;
   background-color: #F1F1F1;
-  color: vars.$colorSeagale;
+  color: var(--colorSeagale);
   border-radius: 10px;
   margin: 0.5rem 0;
-  border: 1px solid vars.$colorSeagale;
+  border: 1px solid var(--colorSeagale);
   cursor: pointer;
 }
 
@@ -42,5 +38,4 @@
   font-family: "Exo-Bold";
   margin: 2rem auto 0;
   justify-content: center;
-} 
- 
+}
