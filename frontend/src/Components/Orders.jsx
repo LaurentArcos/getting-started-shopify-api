@@ -242,45 +242,23 @@ const Orders = () => {
                   <td>{order.shipping_address.country}</td>
                 </tr>
                 {(expandedOrderId === order.id || expandAll) && (
-                  <tr>
-                    <td
-                      colSpan="9"
-                      style={{ backgroundColor: "white", padding: 0 }}
-                    >
-                      <div className="order-details">
-                        <div className="order-items">
-                          {order.line_items.map((item) => (
-                            <div className="item" key={item.id}>
-                              <div className="item-name">
-                                {item.title} - qté : {item.quantity}
-                              </div>
-                              <div className="item-sizeandcolor">
-                                {item.variant_title}
-                              </div>
-                              <div className="item-details">
-                                <span className="item-sku">
-                                  (sku: {item.sku})
-                                </span>
-                              </div>
-                              <div className="item-details">
-                                <span className="item-id">
-                                  (id: {item.product_id})
-                                </span>
-                              </div>
-                              <div className="item-details">
-                                <span className="item-id">
-                                  (Métafield Value:{" "}
-                                  {metafields[item.product_id]})
-                                </span>
-                              </div>
-                            </div>
-                          ))}
+                <tr>
+                  <td colSpan="9" style={{ backgroundColor: "white", padding: 0 }}>
+                    <div className="order-details">
+                      {order.line_items.map((item, index) => (
+                        <div key={index} className="order-details-item">
+                          <div className="item-name">{item.title} - qté : {item.quantity}</div>
+                          <div>{item.variant_title}</div>
+                          <div className="item-sku">(sku: {item.sku})</div>
+                          <div className="item-id">(id: {item.product_id})</div>
+                          <div>(Métafield Value: {metafields[item.product_id]})</div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-</React.Fragment>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
             ))
           ) : (
             <tr>
