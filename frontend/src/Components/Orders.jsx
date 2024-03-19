@@ -15,9 +15,25 @@ const Orders = () => {
   const [searchTransporter, setSearchTransporter] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
   const [searchPostalCode, setSearchPostalCode] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const filteredOrders = orders.filter((order) => {
+    const orderDate = new Date(order.created_at).getTime();
+    const start = startDate ? new Date(startDate).getTime() : null;
+    let end = endDate ? new Date(endDate) : null;
+    
+    if (end) {
+
+      let endWithExtraDay = new Date(end);
+      endWithExtraDay.setDate(endWithExtraDay.getDate() + 1);
+      
+      end = endWithExtraDay.getTime();
+    }
+  
     return (
+      (!startDate || orderDate >= start) &&
+      (!endDate || orderDate < end) &&
       (searchID === "" || order.name.toLowerCase().includes(searchID.toLowerCase())) &&
       (searchClient === "" ||
         (order.customer && `${order.customer.first_name} ${order.customer.last_name}`.toLowerCase().includes(searchClient.toLowerCase()))) &&
@@ -64,7 +80,6 @@ const Orders = () => {
 
   return (
     <div>
-      {filteredOrders.length > 0 ? (
         <table className="Orders-table">
           <thead>
             <tr className="title-row">
@@ -83,7 +98,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="ID"
+                  placeholder=""
                   value={searchID}
                   onChange={(e) => setSearchID(e.target.value)}
                 />
@@ -104,11 +119,29 @@ const Orders = () => {
                   />
                 </button>
               </th>
-              <th className="th2"></th>
+
+
+              <th className="th2">
+                <input
+                  className="input-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  placeholder="Date de début"
+                />
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  placeholder="Date de fin"
+                />
+              </th>
+              
+              
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Transporteur"
+                  placeholder=""
                   value={searchTransporter}
                   onChange={(e) => setSearchTransporter(e.target.value)}
                 />
@@ -116,7 +149,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Client"
+                  placeholder=""
                   value={searchClient}
                   onChange={(e) => setSearchClient(e.target.value)}
                 />
@@ -124,7 +157,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Adresse"
+                  placeholder=""
                   value={searchAddress}
                   onChange={(e) => setSearchAddress(e.target.value)}
                 />
@@ -132,7 +165,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Code Postal"
+                  placeholder=""
                   value={searchPostalCode}
                   onChange={(e) => setSearchPostalCode(e.target.value)}
                 />
@@ -140,7 +173,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Ville"
+                  placeholder=""
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
                 />
@@ -148,7 +181,7 @@ const Orders = () => {
               <th className="th2">
                 <input
                   type="text"
-                  placeholder="Pays"
+                  placeholder=""
                   value={searchCountry}
                   onChange={(e) => setSearchCountry(e.target.value)}
                 />
@@ -157,7 +190,8 @@ const Orders = () => {
           </thead>
 
           <tbody>
-            {filteredOrders.map((order) => (
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
               <React.Fragment key={order.id}>
                 <tr>
                   <td>
@@ -246,13 +280,15 @@ const Orders = () => {
                     </td>
                   </tr>
                 )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>Aucune commande trouvée</p>
-      )}
+</React.Fragment>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="9" style={{ textAlign: "center", padding: "50px", fontSize: "1.5rem" }}>Aucune commande ne correspond à la recherche</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

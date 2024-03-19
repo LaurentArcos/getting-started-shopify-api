@@ -1,15 +1,5 @@
 @use 'vars';
 
-.search input {
-  font-size: 1.1rem;
-  width: 320px;
-  padding: 10px;
-  background-color: vars.$colorSeagale;
-  color: white;
-  border: none;
-  outline: none;
-}
-
 .customer-name {
   font-size: 0.8rem;
   font-weight: normal;
@@ -79,8 +69,18 @@
 }
 
 input {
-  margin: 0px 5px;
+ padding: 5px;
+ border: 2px solid #f2f2f2;
+ background-color: #15184c00;
+ color: vars.$colorSeagale;
+ font-family: 'Exo-bold';
+ font-size: 0.8rem;
 }
+
+.input-date {
+  margin-bottom: 10px;
+}
+
 
 .order-items {
   display: flex;
@@ -168,6 +168,7 @@ th {
 
 .th2 {
   background-color: #15184c31;
+  vertical-align: middle;
 }
 
 tr:nth-child(even) {
