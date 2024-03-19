@@ -1,4 +1,5 @@
 import express from 'express';
+import Shopify from 'shopify-api-node';
 const router = express.Router();
 
 
@@ -29,63 +30,52 @@ router.get('/', async (req, res) => {
   res.send(data);
 });
 
-router.post('/', async (req, res) => {
-  const { orderId } = req.params;
-  const { location_id, line_items } = req.body;
-
-  const shopifyUrl = `https://${process.env.SHOPIFY_STORE_NAME}.myshopify.com/admin/api/2023-10/orders/${orderId}/fulfillments.json`;
+router.post('/fulfill', async (req, res) => {
+  const { orderIds } = req.body;
+  const shopify = new Shopify({
+    shopName: process.env.SHOPIFY_STORE_NAME,
+    apiKey: process.env.SHOPIFY_API_KEY, 
+    password: process.env.SHOPIFY_API_PASSWORD,
+  });
 
   try {
-    console.log('Sending request to Shopify:', shopifyUrl, {
-      headers: {
-        'X-Shopify-Access-Token': process.env.SHOPIFY_API_TOKEN,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fulfillment: {
-          location_id,
-          tracking_number: "",
-          line_items,
-        },
-      }),
-    });
+    const results = [];
 
-    const response = await fetch(shopifyUrl, {
-      method: 'POST',
-      headers: {
-        'X-Shopify-Access-Token': process.env.SHOPIFY_API_TOKEN,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fulfillment: {
-          location_id,
-          tracking_number: "", 
-          line_items,
-        },
-      }),
-    });
+    for (const orderId of orderIds) {
+      // Récupérer les détails de commande pour le fulfillment
+      const fulfillmentDetails = await shopify.fulfillmentOrder.list(orderId);
+      const fulfillmentOrderId = fulfillmentDetails[0].id;
+      const fulfillmentLineitemIds = fulfillmentDetails[0].line_items.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+      }));
 
-    
-    if (!response.ok) {
-      const errorText = await response.text(); 
-      console.error('Failed to fetch:', errorText, 'Status:', response.status); 
-      return res.status(500).send({ error: 'Error creating fulfillment', details: errorText });
+      // Préparer les données de mise à jour du fulfillment
+      const updateParams = {
+        line_items_by_fulfillment_order: [{
+          fulfillment_order_id: fulfillmentOrderId,
+          fulfillment_order_line_items: fulfillmentLineitemIds,
+        }],
+        // Supposons que trackingNumber, trackingUrl, etc., sont disponibles
+        tracking_info: {
+          number: "123456",
+          url: "https://example.com/tracking",
+          company: "ShippingCompany",
+        },
+        notify_customer: false,
+        // Autres paramètres si nécessaire
+      };
+
+      // Créer le fulfillment
+      const updateFulfillment = await shopify.fulfillment.createV2(orderId, updateParams);
+
+      results.push({ orderId, status: 'success', data: updateFulfillment });
     }
 
-  
-    let data;
-    try {
-      data = await response.json();
-    } catch (error) {
-      console.error('Error parsing response JSON:', error);
-      return res.status(500).send({ error: 'Error parsing Shopify response' });
-    }
-
-    console.log('Fulfillment created:', data);
-    res.send(data);
+    res.json(results);
   } catch (error) {
-    console.error('Error creating fulfillment:', error);
-    res.status(500).send({ error: 'Error creating fulfillment', details: error.message });
+    console.error('Erreur lors de la création des fulfillments sur Shopify:', error);
+    res.status(500).json({ message: "Erreur interne du serveur", error: error.message });
   }
 });
 

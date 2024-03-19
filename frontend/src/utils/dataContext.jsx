@@ -52,17 +52,9 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const updateOrderFulfillmentStatus = (orderId, status) => {
-    setOrders(orders => orders.map(order => {
-      if (order.id === orderId) {
-        return { ...order, fulfillment_status: status };
-      }
-      return order;
-    }));
-  };
 
   return (
-    <DataContext.Provider value={{ orders, metafields, fetchMetafieldsForProduct, setOrders, setMetafields, locationId, updateOrderFulfillmentStatus }}>
+    <DataContext.Provider value={{ orders, metafields, fetchMetafieldsForProduct, setOrders, setMetafields, locationId}}>
       {children}
     </DataContext.Provider>
   );

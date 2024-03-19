@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 const Header = () => {
   return (
     <div className="header">
-
       <NavLink
         className={({ isActive }) =>
           isActive ? "header-link header-link-active" : "header-link"
@@ -29,20 +28,8 @@ const Header = () => {
         }
         to="/picking"
       >
-        Picking
+        Préparation
       </NavLink>
-
-      {/* 
-      <NavLink
-        className={({ isActive }) =>
-          isActive ? "header-link header-link-active" : "header-link"
-        }
-        to="/jacky"
-      >
-        Jacky
-      </NavLink> 
-      */}
-
     </div>
   );
 };

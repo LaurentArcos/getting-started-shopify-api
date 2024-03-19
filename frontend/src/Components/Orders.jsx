@@ -6,7 +6,6 @@ const Orders = () => {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-
   const filteredOrders = orders.filter((order) => order.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const toggleOrderDetails = (id) => {
@@ -20,10 +19,6 @@ const Orders = () => {
     }
   };
 
-  const handleEtiquetteClick = () => {
-    alert("Cette fonctionnalité n'est pas encore disponible.");
-  };
-
   return (
     <div>
       <div className="search">
@@ -35,97 +30,66 @@ const Orders = () => {
         />
       </div>
       {filteredOrders.length > 0 ? (
-        <div>
-          {filteredOrders.map((order) => (
-            <React.Fragment key={order.id}>
-              <div
-                className="order"
-                onClick={() => toggleOrderDetails(order.id)}
-              >
-                <div className="order-info">
-                  <div className="order-id">
-                    <strong>{order.name}</strong> (id:{order.id})
-                  </div>
-                  <div className="customer-name">
-                    {order.customer.first_name} {order.customer.last_name}
-                  </div>
-
-                </div>
-                <div className="order-status">
-                  {order.fulfillment_status === "fulfilled" && (
-                    <img
-                      src={`./check.png`}
-                      alt="Fulfilled"
-                      style={{ width: "40px", marginRight: "20px" }}
-                    />
-                  )}
-                  <div className="order-meta">
-                    <div className="order-price">
-                      {order.current_subtotal_price} €
-                    </div>
-                    <div className="order-date">
-                      {new Date(order.created_at).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {expandedOrderId === order.id && (
-                <div className="order-details">
-                  <div className="order-items">
-                    {order.line_items.map((item) => (
-                      <div className="item" key={item.id}>
-                        <div className="item-name">
-                          {item.title} - qté : {item.quantity}
-                        </div>
-                        <div className="item-sizeandcolor">
-                          {item.variant_title}
-                        </div>
-                        <div className="item-details">
-                          <span className="item-sku">(sku: {item.sku})</span>
-                        </div>
-                        <div className="item-details">
-                          <span className="item-id">(id: {item.product_id})</span>
-                        </div>
-                        <div className="item-details">
-                          <span className="item-id">(Métafield Value: {metafields[item.product_id]})</span>
+        <table>
+          <thead>
+            <tr>
+              <th>Commande (ID)</th>
+              <th>Produits</th>
+              <th>Date</th>
+              <th>Transporteur</th>
+              <th>Client</th>
+              <th>Adresse</th>
+              <th>Code postal</th>
+              <th>Ville</th>
+              <th>Pays</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.map((order) => (
+              <React.Fragment key={order.id}>
+                <tr>
+                  <td><strong>{order.name}</strong> ({order.id})</td>
+                  <td>{order.line_items.reduce((acc, item) => acc + item.quantity, 0)}                     <button onClick={() => toggleOrderDetails(order.id)}>
+                      {expandedOrderId === order.id ? 'Moins de détails' : 'Plus de détails'}
+                    </button></td>
+                  <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                  <td>{order.shipping_lines.map((line) => line.title).join(", ")}</td>
+                  <td>{order.customer.first_name} {order.customer.last_name}</td>
+                  <td>{order.shipping_address.address1}</td>
+                  <td>{order.shipping_address.zip}</td>
+                  <td>{order.shipping_address.city}</td>
+                  <td>{order.shipping_address.country}</td>
+                </tr>
+                {expandedOrderId === order.id && (
+                  <tr>
+                    <td colSpan="10">
+                      <div className="order-details">
+                        {/* Ici, réutiliser le code existant pour afficher les détails des produits */}
+                        <div className="order-items">
+                          {order.line_items.map((item) => (
+                            <div className="item" key={item.id}>
+                              <div className="item-name">{item.title} - qté : {item.quantity}</div>
+                              <div className="item-sizeandcolor">{item.variant_title}</div>
+                              <div className="item-details">
+                                <span className="item-sku">(sku: {item.sku})</span>
+                              </div>
+                              <div className="item-details">
+                                <span className="item-id">(id: {item.product_id})</span>
+                              </div>
+                              <div className="item-details">
+                                <span className="item-id">(Métafield Value: {metafields[item.product_id]})</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="shipping-details">
-                    <div className="shipping-address">
-                      <span>{order.shipping_address.first_name} {order.shipping_address.last_name}</span>
-                    </div>
-                    <div className="shipping-address">
-                      {order.shipping_address.address1}
-                    </div>
-                    <div className="shipping-address">
-                      {order.shipping_address.zip}
-                    </div>
-                    <div className="shipping-address">
-                      {order.shipping_address.city}
-                    </div>
-                  
-                    <div className="shipping-method">
-                      {order.shipping_lines.map((line, index) => (
-                        <div key={index}>
-                          <div><span>Mode de livraison : {line.title}</span></div>
-                          <div>Code : {line.code}</div>
-                          <div>Prix : {line.price} €</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <button className="etiquette-button" onClick={handleEtiquetteClick}>Voir étiquette</button>
-                  </div>
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <p>Aucune commande trouvée</p>
       )}

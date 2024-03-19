@@ -1,13 +1,12 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSessions } from "../utils/sessionContext";
-import { DataContext } from "../utils/dataContext";
+
 import { useNavigate } from "react-router-dom";
 
 const Pickings = () => {
   const [expandedSessionId, setExpandedSessionId] = useState(null);
   const [orders, setOrders] = useState([]);
   const { sessions, removeSession } = useSessions();
-  const { updateOrderFulfillmentStatus } = useContext(DataContext);
   const [fulfilledSessions, setFulfilledSessions] = useState({});
 
   const navigate = useNavigate();
@@ -16,18 +15,38 @@ const Pickings = () => {
     navigate("/jacky", { state: { selectedOrderIds: orderIds, sessionName: sessionName } });
   };
 
-  const markOrdersAsFulfilled = (orderIds, sessionId) => {
+
+  const markOrdersAsFulfilled = async (orderIds, sessionId) => {
     const confirmMessage = "Êtes-vous sûr de vouloir marquer ces commandes comme fulfilled ?";
     if (window.confirm(confirmMessage)) {
-      orderIds.forEach(orderId => {
-        updateOrderFulfillmentStatus(orderId, 'fulfilled');
-      });
-      setFulfilledSessions((prev) => ({
-        ...prev,
-        [sessionId]: true,
-      }));
+      try {
+        const response = await fetch(`http://localhost:3001/api/orders/fulfill`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderIds: orderIds,
+            // Ajoutez d'autres données nécessaires si votre endpoint backend les requiert
+          }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log("Commandes marquées comme fulfilled : ", result);
+          setFulfilledSessions((prev) => ({
+            ...prev,
+            [sessionId]: true,
+          }));
+        } else {
+          console.error("Erreur lors de la mise à jour du statut des commandes : ", result);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la communication avec le backend", error);
+      }
     }
   };
+
 
   useEffect(() => {
     fetch("http://localhost:3001/api/orders")
