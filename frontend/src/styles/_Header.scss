@@ -5,8 +5,8 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  padding: 2rem 0;
-  background: vars.$colorSeagale;
+  padding: 4rem 0 2rem;
+  background: white;
   letter-spacing: 0.1rem;
   align-items: center;
   font-size: 1.7rem;
@@ -14,15 +14,17 @@
 }
 
 .header-link {
-  color: white;
+  color: vars.$colorSeagale;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .header-link:hover {
   color: vars.$activeColor;
+  
 }
 
 .header-link-active {
   color: vars.$activeColor;
+  text-decoration: underline;
 }

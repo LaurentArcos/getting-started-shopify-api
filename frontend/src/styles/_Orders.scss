@@ -1,17 +1,5 @@
 @use 'vars';
 
-.search {
-  border-top: 1px solid white;
-  display: flex;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  background-color: vars.$colorSeagale;
-  padding: 20px;
-  justify-content: center;
-  align-items: center;
-}
-
 .search input {
   font-size: 1.1rem;
   width: 320px;
@@ -39,17 +27,6 @@
 .product-quantity {
   display: inline; 
   margin-right: 15px; 
-}
-
-.order {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #F1F1F1;
-  padding: 15px 30px;
-  margin-top: 3px;
-  margin-bottom: 0;
-  cursor: pointer;
 }
 
 .order-id > strong {
@@ -174,7 +151,7 @@ input {
 
 
 table {
-  max-width: 100%;
+  max-width: 90%;
   margin: 2rem auto; 
   border-collapse: collapse;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); 

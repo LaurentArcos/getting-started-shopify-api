@@ -1,18 +1,38 @@
-
 import React, { useState, useContext } from "react";
 import { DataContext } from "../utils/dataContext";
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
 
 const Orders = () => {
-  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext);
+  const { orders, fetchMetafieldsForProduct, metafields } =
+    useContext(DataContext);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [expandAll, setExpandAll] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchID, setSearchID] = useState("");
+  const [searchClient, setSearchClient] = useState("");
+  const [searchCity, setSearchCity] = useState("");
+  const [searchCountry, setSearchCountry] = useState("");
+  const [searchTransporter, setSearchTransporter] = useState("");
+  const [searchAddress, setSearchAddress] = useState("");
+  const [searchPostalCode, setSearchPostalCode] = useState("");
 
-  const filteredOrders = orders.filter((order) =>
-    order.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOrders = orders.filter((order) => {
+    return (
+      (searchID === "" || order.name.toLowerCase().includes(searchID.toLowerCase())) &&
+      (searchClient === "" ||
+        (order.customer && `${order.customer.first_name} ${order.customer.last_name}`.toLowerCase().includes(searchClient.toLowerCase()))) &&
+      (searchCity === "" ||
+        (order.shipping_address && order.shipping_address.city && order.shipping_address.city.toLowerCase().includes(searchCity.toLowerCase()))) &&
+      (searchCountry === "" ||
+        (order.shipping_address && order.shipping_address.country && order.shipping_address.country.toLowerCase().includes(searchCountry.toLowerCase()))) &&
+      (searchTransporter === "" ||
+        (order.shipping_lines && order.shipping_lines.some((line) => line.title.toLowerCase().includes(searchTransporter.toLowerCase())))) &&
+      (searchAddress === "" ||
+        (order.shipping_address && order.shipping_address.address1 && order.shipping_address.address1.toLowerCase().includes(searchAddress.toLowerCase()))) &&
+      (searchPostalCode === "" || 
+        (order.shipping_address && order.shipping_address.zip && order.shipping_address.zip.toString().includes(searchPostalCode)))
+    );
+  });
 
   const toggleOrderDetails = (id) => {
     if (expandAll) {
@@ -21,7 +41,8 @@ const Orders = () => {
     setExpandedOrderId((prevState) => (prevState === id ? null : id));
     const order = orders.find((order) => order.id === id);
     order?.line_items.forEach((item) => {
-      if (!metafields[item.product_id]) { // Vérifier si les metafields ne sont pas déjà chargés
+      if (!metafields[item.product_id]) {
+        // Vérifier si les metafields ne sont pas déjà chargés
         fetchMetafieldsForProduct(item.product_id);
       }
     });
@@ -43,14 +64,6 @@ const Orders = () => {
 
   return (
     <div>
-      <div className="search">
-        <input
-          type="number"
-          placeholder="Rechercher par numéro de commande"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
       {filteredOrders.length > 0 ? (
         <table className="Orders-table">
           <thead>
@@ -65,42 +78,123 @@ const Orders = () => {
               <th>Ville</th>
               <th>Pays</th>
             </tr>
+
             <tr className="filter-row">
-              <th className="th2"></th>
               <th className="th2">
-                <button onClick={toggleAllOrderDetails} style={{ background: "none", border: "none" }}>
+                <input
+                  type="text"
+                  placeholder="ID"
+                  value={searchID}
+                  onChange={(e) => setSearchID(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <button
+                  onClick={toggleAllOrderDetails}
+                  style={{ background: "none", border: "none" }}
+                >
                   <img
                     className="toggle-icon"
-                    src={expandAll ? visibleIcon : invisibleIcon}
-                    alt={expandAll ? "Cacher tous les détails" : "Afficher tous les détails"}
+                    src={expandAll ? invisibleIcon : visibleIcon}
+                    alt={
+                      expandAll
+                        ? "Cacher tous les détails"
+                        : "Afficher tous les détails"
+                    }
                   />
                 </button>
               </th>
-              <th  className="th2" colSpan={7}></th>
+              <th className="th2"></th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Transporteur"
+                  value={searchTransporter}
+                  onChange={(e) => setSearchTransporter(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Client"
+                  value={searchClient}
+                  onChange={(e) => setSearchClient(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Adresse"
+                  value={searchAddress}
+                  onChange={(e) => setSearchAddress(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Code Postal"
+                  value={searchPostalCode}
+                  onChange={(e) => setSearchPostalCode(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Ville"
+                  value={searchCity}
+                  onChange={(e) => setSearchCity(e.target.value)}
+                />
+              </th>
+              <th className="th2">
+                <input
+                  type="text"
+                  placeholder="Pays"
+                  value={searchCountry}
+                  onChange={(e) => setSearchCountry(e.target.value)}
+                />
+              </th>
             </tr>
           </thead>
+
           <tbody>
             {filteredOrders.map((order) => (
               <React.Fragment key={order.id}>
                 <tr>
-                <td>
+                  <td>
                     <strong>{order.name}</strong> ({order.id})
                   </td>
                   <td>
-  <span className="product-quantity">
-    {order.line_items.reduce((acc, item) => acc + item.quantity, 0)}
-  </span>
-  <button
-    onClick={() => toggleOrderDetails(order.id)}
-    style={{ background: "none", border: "none", padding: 0, margin: 0, display: "inline" }}
-  >
-    <img
-      className="toggle-icon"
-      src={expandedOrderId === order.id ? visibleIcon : invisibleIcon}
-      alt={expandedOrderId === order.id ? "Moins de détails" : "Plus de détails"}
-    />
-  </button>
-</td>
+                    <span className="product-quantity">
+                      {order.line_items.reduce(
+                        (acc, item) => acc + item.quantity,
+                        0
+                      )}
+                    </span>
+                    <button
+                      onClick={() => toggleOrderDetails(order.id)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        margin: 0,
+                        display: "inline",
+                      }}
+                    >
+                      <img
+                        className="toggle-icon"
+                        src={
+                          expandedOrderId === order.id
+                            ? visibleIcon
+                            : invisibleIcon
+                        }
+                        alt={
+                          expandedOrderId === order.id
+                            ? "Moins de détails"
+                            : "Plus de détails"
+                        }
+                      />
+                    </button>
+                  </td>
                   <td>{new Date(order.created_at).toLocaleDateString()}</td>
                   <td>
                     {order.shipping_lines.map((line) => line.title).join(", ")}
@@ -115,7 +209,10 @@ const Orders = () => {
                 </tr>
                 {(expandedOrderId === order.id || expandAll) && (
                   <tr>
-                    <td colSpan="9" style={{ backgroundColor: 'white', padding: 0 }}>
+                    <td
+                      colSpan="9"
+                      style={{ backgroundColor: "white", padding: 0 }}
+                    >
                       <div className="order-details">
                         <div className="order-items">
                           {order.line_items.map((item) => (
