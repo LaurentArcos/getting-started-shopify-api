@@ -20,7 +20,7 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(10);
+  const [ordersPerPage] = useState(8);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all"); 
 
   const handleSelectAll = (e) => {
@@ -127,21 +127,34 @@ const Orders = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleButtonClick = () => {
+    // Ici, vous pouvez ajouter la logique qui sera exécutée quand le bouton est cliqué
+    console.log("Bouton cliqué");
+  };
+
   return (
 
-    <div>
+    <div className="orders">
 
-        <div>
-          <div className="filter-controls">
-            <label htmlFor="fulfillmentFilter">Filtrer par statut : </label>
-            <select id="fulfillmentFilter" value={fulfillmentFilter} onChange={handleFulfillmentFilterChange}>
-              <option value="all">Toutes les commandes</option>
-              <option value="fulfilled">Commandes traitées</option>
-              <option value="not-fulfilled">Commandes non traitées</option>
-            </select>
-          </div>
+<div className="filter-pagination-container">
+  <div className="filter-container">
+    <label htmlFor="fulfillmentFilter">Filtrer les commandes :</label>
+    <select
+      id="fulfillmentFilter"
+      value={fulfillmentFilter}
+      onChange={handleFulfillmentFilterChange}
+      className="filter-select"
+    >
+      <option value="all">Tout afficher</option>
+      <option value="fulfilled">Commandes traitées</option>
+      <option value="not-fulfilled">Commandes non traitées</option>
+    </select>
+  </div>
+
+  <button onClick={handleButtonClick} className="middle-button">Créer une session</button>
+
           <div className="pagination">
-            <button onClick={() => paginate(1)} className="page-symbol">{"<<"}</button>
+            <button onClick={() => paginate(1)} className="page-nav">{"<<"}</button>
             <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="page-nav">{"<"}</button>
             {pageNumbers.slice(startPage - 1, endPage).map(number => (
               <button key={number} className={`page-number ${currentPage === number ? "active" : ""}`} onClick={() => paginate(number)}>
@@ -149,7 +162,7 @@ const Orders = () => {
               </button>
             ))}
             <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === pageNumbers.length} className="page-nav">{">"}</button>
-            <button onClick={() => paginate(pageNumbers.length)} className="page-symbol">{">>"}</button>
+            <button onClick={() => paginate(pageNumbers.length)} className="page-nav">{">>"}</button>
           </div>
         </div>
 

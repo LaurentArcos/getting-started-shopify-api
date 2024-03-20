@@ -1,5 +1,9 @@
 @use 'vars';
 
+.orders {
+  color: vars.$colorSeagale;
+}
+
 .customer-name {
   font-size: 0.8rem;
   font-weight: normal;
@@ -90,7 +94,7 @@
 input {
  padding: 10px 5px;
  border: 2px solid #f2f2f2;
- background-color: #15184c00;
+ background-color: white;
  color: vars.$colorSeagale;
  font-family: 'Exo-bold';
  font-size: 0.8rem;
@@ -225,15 +229,19 @@ th, td {
   background: none;
   cursor: pointer;
   font-size: 1.2rem;
+  font-family: 'exo';
+  color: vars.$colorSeagale;
 }
 
 .page-number:hover, .page-symbol:hover {
   text-decoration: underline;
+  
 }
 
 .page-number.active {
   font-weight: bold;
   text-decoration: underline;
+  
 }
 
 .page-nav {
@@ -243,7 +251,7 @@ th, td {
   background: none;
   cursor: pointer;
   font-size: 1.2rem;
-  color: #000; 
+  color: vars.$colorSeagale;
 }
 
 .page-nav:disabled {
@@ -259,4 +267,41 @@ th, td {
 .checkbox-selectAll {
   transform: scale(2.3); 
   accent-color: vars.$colorSeagale;
+}
+
+
+.filter-pagination-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+}
+
+.filter-container label {
+  font-family: 'exo-bold';
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.filter-select {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: 'Exo';
+  font-size: 1.2rem;
+}
+
+.middle-button {
+  background-color: vars.$colorSeagale;
+  font-size: 1rem;
+  font-family: 'exo';
+  color: white;
+  padding: 15px 40px;
+  cursor: pointer;
+  border-radius: 5px;
 }

@@ -5,12 +5,13 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  padding: 3rem 0 1rem;
+  padding: 2rem 0;
   background: white;
   letter-spacing: 0.1rem;
   align-items: center;
   font-size: 1.7rem;
   justify-content: space-around;
+  border-bottom: 1px solid vars.$colorSeagale;
 }
 
 .header-link {
