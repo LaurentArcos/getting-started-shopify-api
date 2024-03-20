@@ -1,120 +1,102 @@
 @use 'vars';
 
-.sessions-header {
-  border-top: 1px solid white;
+.sessions-list {
   display: flex;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  background-color: vars.$colorSeagale;
-  padding: 20px;
   justify-content: center;
-  align-items: center;
-}
-
-.sessions-header button {
-  font-family: "Exo-bold";
-  font-size: 1.2rem;
-  padding: 20px;
-  background-color: #F1F1F1;
-  color: vars.$colorSeagale;
-  border-radius: 10px;
-  margin: 0.5rem 0;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.sessions-orders {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   background-color: #F1F1F1;
   padding: 15px 30px;
   margin-top: 3px;
   margin-bottom: 0;
+  cursor: pointer;
 }
 
-.sessions-orders-id > strong {
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 10px;
+.sessions-list-name {
+  margin: 10px;
 }
 
-.sessions-orders-id {
-  font-size: 0.8rem;
-  margin-bottom: 10px;
+.sessions-list-name strong {
+  font-family: 'Exo-Bold';
+  font-size: 1.5rem;
+  margin: 1; /* Ajout d'une marge en bas */
 }
 
-.sessions-orders-price {
-  color: rgb(105, 105, 105);
-  font-weight: bold;
-  margin-bottom: 10px;
+.sessions-list-name :nth-child(2) {
+  margin-top: 0.5rem;
+  font-size: 1rem;
 }
 
-.sessions-orders-date {
-  font-size: smaller;
-  color: rgb(105, 105, 105);
+.sessions-list-name p:last-child {
+  font-style: italic;
+  font-size: 0.7rem;
+  margin-top: 0.5rem;
 }
 
-.sessions-header button:active {
-  border-color: vars.$colorSeagale;
+.sessions-list-details {
+  background-color: white; 
+  padding-top: 10px;
+  
 }
 
-.session-checkbox {
- cursor: pointer;
- transform: scale(1.6);
-}
-
-.session-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 30%;
-  min-height: 30%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 50px;
-  z-index: 1000;
+.sessions-list-buttons {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center;
 }
 
-.session-modal h2 {
-  font-size: 2rem;
-  font-family: "Exo-bold";
+.sessions-list-buttons button:nth-child(1){
+  font-family: 'Exo-bold';
+  text-decoration: underline;
+  font-size: 0.9rem;
+  margin: 0 10px;
+  border: none;
+  padding: 0 0 10px 0;
   color: vars.$colorSeagale;
+  cursor: pointer;
 }
 
-.session-modal input {
-  font-size: 1.1rem;
-  margin: 2rem;
-  padding: 1rem 2rem;
-  font-family: "Exo";
-  color: vars.$colorSeagale;
+.sessions-list-buttons button:nth-child(1):hover {
+  scale: 1.1;
 }
 
-.session-modal p {
-  font-family: "Exo-bold";
-  color: vars.$colorSeagale;
+.sessions-list-buttons button:nth-child(2){
+  font-family: 'Exo-bold';
+  margin: 0 10px;
+  border: none;
+  padding: 0 10px  0 0;
+  color: vars.$activeColor;
+  cursor: pointer;
+}
+.sessions-list-buttons button:nth-child(2):hover{
+  scale: 1.1;
 }
 
-.session-modal button {
-  font-family: "Exo-bold";
-  background-color: white;
-  color: vars.$colorSeagale;
-  margin: 2rem;
-  padding: 10px 20px;
+.jacky-button {
+  font-family: 'Exo-bold';
+  margin: 10px 40px;
+  padding: 10px;
+  color: white;
+  background-color: vars.$colorSeagale;
   border-radius: 5px;
+  cursor: pointer;
 }
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
-  z-index: 999; 
+.jacky-button:hover {
+  scale: 1.1;
+}
+
+.fulfilled-button {
+  font-family: 'Exo-bold';
+  margin: 10px 20px 10px 0;
+  padding: 10px;
+  color: vars.$colorSeagale;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fulfilled-button:hover {
+  color: green;
+  background-color: white;
+  border: 2px solid green;
+  scale: 1.1;
 }

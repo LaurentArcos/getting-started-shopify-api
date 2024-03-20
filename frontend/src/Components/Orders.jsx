@@ -30,22 +30,28 @@ const Orders = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      const allOrderIds = new Set(filteredOrders.map((order) => order.id));
-      setSelectedOrders(allOrderIds);
+        const allOrderIds = new Set(filteredOrders.map((order) => order.id));
+        setSelectedOrders(allOrderIds);
+        setSelectAll(true); // Assurez-vous que tous sont sélectionnés
     } else {
-      setSelectedOrders(new Set());
+        setSelectedOrders(new Set());
+        setSelectAll(false); // Désélectionner tout
     }
-  };
+};
 
   const handleSelectOrder = (orderId) => {
     setSelectedOrders((prevSelectedOrders) => {
-      const newSelectedOrders = new Set(prevSelectedOrders);
-      if (newSelectedOrders.has(orderId)) {
-        newSelectedOrders.delete(orderId);
-      } else {
-        newSelectedOrders.add(orderId);
-      }
-      return newSelectedOrders;
+        const newSelectedOrders = new Set(prevSelectedOrders);
+        if (newSelectedOrders.has(orderId)) {
+            newSelectedOrders.delete(orderId);
+        } else {
+            newSelectedOrders.add(orderId);
+        }
+
+        // Mettre à jour l'état de selectAll basé sur si tous les ordres sont sélectionnés
+        setSelectAll(newSelectedOrders.size === filteredOrders.length);
+
+        return newSelectedOrders;
     });
   };
 
@@ -61,63 +67,43 @@ const Orders = () => {
     }
 
     const matchesFilters =
-      (!startDate || orderDate >= start) &&
-      (!endDate || orderDate < end) &&
-      (searchID === "" ||
-        order.name.toLowerCase().includes(searchID.toLowerCase())) &&
-      (searchClient === "" ||
-        (order.customer &&
-          `${order.customer.first_name} ${order.customer.last_name}`
-            .toLowerCase()
-            .includes(searchClient.toLowerCase()))) &&
-      (searchCity === "" ||
-        (order.shipping_address &&
-          order.shipping_address.city
-            .toLowerCase()
-            .includes(searchCity.toLowerCase()))) &&
-      (searchCountry === "" ||
-        (order.shipping_address &&
-          order.shipping_address.country
-            .toLowerCase()
-            .includes(searchCountry.toLowerCase()))) &&
-      (searchTransporter === "" ||
-        (order.shipping_lines &&
-          order.shipping_lines.some((line) =>
-            line.title.toLowerCase().includes(searchTransporter.toLowerCase())
-          ))) &&
-      (searchAddress === "" ||
-        (order.shipping_address &&
-          order.shipping_address.address1
-            .toLowerCase()
-            .includes(searchAddress.toLowerCase()))) &&
-      (searchPostalCode === "" ||
-        (order.shipping_address &&
-          order.shipping_address.zip.toString().includes(searchPostalCode)));
+    (!startDate || orderDate >= start) &&
+    (!endDate || orderDate < end) &&
+    (searchID === "" || order.name.toLowerCase().includes(searchID.toLowerCase())) &&
+    (searchClient === "" ||
+      (`${order.customer?.first_name ?? ""} ${order.customer?.last_name ?? ""}`
+        .toLowerCase()
+        .includes(searchClient.toLowerCase()))) &&
+    (searchCity === "" ||
+      order.shipping_address?.city?.toLowerCase().includes(searchCity.toLowerCase())) &&
+    (searchCountry === "" ||
+      order.shipping_address?.country?.toLowerCase().includes(searchCountry.toLowerCase())) &&
+    (searchTransporter === "" ||
+      order.shipping_lines?.some((line) => line.title.toLowerCase().includes(searchTransporter.toLowerCase()))) &&
+    (searchAddress === "" ||
+      order.shipping_address?.address1?.toLowerCase().includes(searchAddress.toLowerCase())) &&
+    (searchPostalCode === "" ||
+      (order.shipping_address?.zip?.toString() ?? "").includes(searchPostalCode));
 
-    let matchesFulfillmentStatus = true;
-    if (
-      fulfillmentFilter === "fulfilled" &&
-      order.fulfillment_status !== "fulfilled"
-    ) {
-      matchesFulfillmentStatus = false;
-    } else if (
-      fulfillmentFilter === "not-fulfilled" &&
-      order.fulfillment_status === "fulfilled"
-    ) {
-      matchesFulfillmentStatus = false;
-    }
+  let matchesFulfillmentStatus = true;
+  if (fulfillmentFilter === "fulfilled" && order.fulfillment_status !== "fulfilled") {
+    matchesFulfillmentStatus = false;
+  } else if (fulfillmentFilter === "not-fulfilled" && order.fulfillment_status === "fulfilled") {
+    matchesFulfillmentStatus = false;
+  }
 
-    let matchesSession = true;
-    if (searchSession !== "") {
-      const matchingSessions = sessions.filter(session => 
-        session.name.toLowerCase().includes(searchSession.toLowerCase())
-      );
-      const matchingOrderIds = new Set(matchingSessions.flatMap(session => session.orderIds));
-      matchesSession = matchingOrderIds.has(order.id);
-    }
+  let matchesSession = true;
+  if (searchSession !== "") {
+    const matchingSessions = sessions.filter((session) =>
+      session.name.toLowerCase().includes(searchSession.toLowerCase())
+    );
+    const matchingOrderIds = new Set(matchingSessions.flatMap((session) => session.orderIds));
+    matchesSession = matchingOrderIds.has(order.id);
+  }
 
-    return matchesFilters && matchesFulfillmentStatus && matchesSession;
-  });
+  return matchesFilters && matchesFulfillmentStatus && matchesSession;
+});
+
 
   const handleFulfillmentFilterChange = (e) => {
     setFulfillmentFilter(e.target.value);
@@ -451,7 +437,7 @@ const Orders = () => {
                 {(expandedOrderId === order.id || expandAll) && (
                   <tr>
                     <td
-                      colSpan="10"
+                      colSpan="11"
                       style={{ backgroundColor: "white", padding: 0 }}
                     >
                       <div className="order-details">
@@ -493,6 +479,9 @@ const Orders = () => {
         </tbody>
       </table>
       {isCreatingSession && (
+      <>
+        
+        <div className="modal-backdrop"></div>
         <div className="session-modal">
           <h2>Créer une nouvelle session</h2>
           <input
@@ -504,8 +493,9 @@ const Orders = () => {
           <button onClick={handleSaveSession}>Sauvegarder la session</button>
           <button onClick={handleCancelSession}>Annuler</button>
         </div>
-      )}
-    </div>
+      </>
+    )}
+  </div>
   );
 };
 
