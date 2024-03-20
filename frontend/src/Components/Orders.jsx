@@ -22,20 +22,25 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(8);
+  const [ordersPerPage, setOrdersPerPage] = useState(5);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const { sessions, addSession } = useSessions();
 
+  const handleOrdersPerPageChange = (e) => {
+    setCurrentPage(1); // Réinitialisez toujours à la première page lors du changement du nombre de commandes par page
+    setOrdersPerPage(Number(e.target.value));
+  };
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
         const allOrderIds = new Set(filteredOrders.map((order) => order.id));
         setSelectedOrders(allOrderIds);
-        setSelectAll(true); // Assurez-vous que tous sont sélectionnés
+        setSelectAll(true); 
     } else {
         setSelectedOrders(new Set());
-        setSelectAll(false); // Désélectionner tout
+        setSelectAll(false); 
     }
 };
 
@@ -202,7 +207,7 @@ const Orders = () => {
         <button onClick={handleCreateSessionClick} className="middle-button">
           Créer une session
         </button>
-
+<div>
         <div className="pagination">
           <button onClick={() => paginate(1)} className="page-nav">
             {"<<"}
@@ -239,7 +244,24 @@ const Orders = () => {
             {">>"}
           </button>
         </div>
+
+      <div>
+          <label htmlFor="ordersPerPage">Commandes par page :</label>
+          <select
+            id="ordersPerPage"
+            value={ordersPerPage}
+            onChange={handleOrdersPerPageChange}
+          >
+            {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50].map((number) => (
+              <option key={number} value={number}>
+                {number}
+              </option>
+            ))}
+          </select>
+        </div> </div>         
       </div>
+
+
 
       <table className="Orders-table">
         <thead>
