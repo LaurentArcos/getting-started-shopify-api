@@ -21,6 +21,7 @@ const Orders = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(10);
+  const [fulfillmentFilter, setFulfillmentFilter] = useState("all"); 
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -33,15 +34,14 @@ const Orders = () => {
     }
   };
 
-  // Fonction mise à jour pour sélectionner/désélectionner une commande
   const handleSelectOrder = (orderId) => {
     if (selectedOrders.includes(orderId)) {
       setSelectedOrders(selectedOrders.filter((id) => id !== orderId));
-      // Désélectionner la case "Sélectionner tout" si une commande est désélectionnée
+      
       setSelectAll(false);
     } else {
       setSelectedOrders([...selectedOrders, orderId]);
-      // Vérifier si toutes les commandes sont sélectionnées après l'ajout
+
       if (filteredOrders.length === selectedOrders.length + 1) {
         setSelectAll(true);
       }
@@ -54,31 +54,34 @@ const Orders = () => {
     let end = endDate ? new Date(endDate) : null;
     
     if (end) {
-
       let endWithExtraDay = new Date(end);
       endWithExtraDay.setDate(endWithExtraDay.getDate() + 1);
-      
       end = endWithExtraDay.getTime();
     }
   
-    return (
-      (!startDate || orderDate >= start) &&
+    const matchesFilters = (!startDate || orderDate >= start) &&
       (!endDate || orderDate < end) &&
       (searchID === "" || order.name.toLowerCase().includes(searchID.toLowerCase())) &&
-      (searchClient === "" ||
-        (order.customer && `${order.customer.first_name} ${order.customer.last_name}`.toLowerCase().includes(searchClient.toLowerCase()))) &&
-      (searchCity === "" ||
-        (order.shipping_address && order.shipping_address.city && order.shipping_address.city.toLowerCase().includes(searchCity.toLowerCase()))) &&
-      (searchCountry === "" ||
-        (order.shipping_address && order.shipping_address.country && order.shipping_address.country.toLowerCase().includes(searchCountry.toLowerCase()))) &&
-      (searchTransporter === "" ||
-        (order.shipping_lines && order.shipping_lines.some((line) => line.title.toLowerCase().includes(searchTransporter.toLowerCase())))) &&
-      (searchAddress === "" ||
-        (order.shipping_address && order.shipping_address.address1 && order.shipping_address.address1.toLowerCase().includes(searchAddress.toLowerCase()))) &&
-      (searchPostalCode === "" || 
-        (order.shipping_address && order.shipping_address.zip && order.shipping_address.zip.toString().includes(searchPostalCode)))
-    );
+      (searchClient === "" || (order.customer && `${order.customer.first_name} ${order.customer.last_name}`.toLowerCase().includes(searchClient.toLowerCase()))) &&
+      (searchCity === "" || (order.shipping_address && order.shipping_address.city.toLowerCase().includes(searchCity.toLowerCase()))) &&
+      (searchCountry === "" || (order.shipping_address && order.shipping_address.country.toLowerCase().includes(searchCountry.toLowerCase()))) &&
+      (searchTransporter === "" || (order.shipping_lines && order.shipping_lines.some(line => line.title.toLowerCase().includes(searchTransporter.toLowerCase())))) &&
+      (searchAddress === "" || (order.shipping_address && order.shipping_address.address1.toLowerCase().includes(searchAddress.toLowerCase()))) &&
+      (searchPostalCode === "" || (order.shipping_address && order.shipping_address.zip.toString().includes(searchPostalCode)));
+  
+    let matchesFulfillmentStatus = true;
+    if (fulfillmentFilter === "fulfilled" && order.fulfillment_status !== "fulfilled") {
+      matchesFulfillmentStatus = false;
+    } else if (fulfillmentFilter === "not-fulfilled" && order.fulfillment_status === "fulfilled") {
+      matchesFulfillmentStatus = false;
+    }
+  
+    return matchesFilters && matchesFulfillmentStatus;
   });
+
+  const handleFulfillmentFilterChange = (e) => {
+    setFulfillmentFilter(e.target.value);
+  };
 
   const toggleOrderDetails = (id) => {
     if (expandAll) {
@@ -88,7 +91,7 @@ const Orders = () => {
     const order = orders.find((order) => order.id === id);
     order?.line_items.forEach((item) => {
       if (!metafields[item.product_id]) {
-        // Vérifier si les metafields ne sont pas déjà chargés
+
         fetchMetafieldsForProduct(item.product_id);
       }
     });
@@ -96,7 +99,7 @@ const Orders = () => {
 
   const toggleAllOrderDetails = () => {
     setExpandAll(!expandAll);
-    // Réinitialiser l'expansion individuelle lors de l'activation de l'expansion globale
+
     if (!expandAll) {
       filteredOrders.forEach((order) => {
         order.line_items.forEach((item) => {
@@ -112,7 +115,6 @@ const Orders = () => {
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
-  // Calculer le nombre total de pages
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredOrders.length / ordersPerPage); i++) {
     pageNumbers.push(i);
@@ -120,27 +122,35 @@ const Orders = () => {
 
   const numberOfPagesToShow = 2; 
 
-  // Générer les numéros de page à afficher
   const startPage = Math.max(1, currentPage - numberOfPagesToShow);
   const endPage = Math.min(pageNumbers.length, currentPage + numberOfPagesToShow);
 
-  // Fonction pour changer de page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
 
     <div>
 
-        <div className="pagination">
-          <button onClick={() => paginate(1)} className="page-symbol">{"<<"}</button>
-          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="page-nav">{"<"}</button>
-          {pageNumbers.slice(startPage - 1, endPage).map(number => (
-            <button key={number} className={`page-number ${currentPage === number ? "active" : ""}`} onClick={() => paginate(number)}>
-              {number}
-            </button>
-          ))}
-          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === pageNumbers.length} className="page-nav">{">"}</button>
-          <button onClick={() => paginate(pageNumbers.length)} className="page-symbol">{">>"}</button>
+        <div>
+          <div className="filter-controls">
+            <label htmlFor="fulfillmentFilter">Filtrer par statut : </label>
+            <select id="fulfillmentFilter" value={fulfillmentFilter} onChange={handleFulfillmentFilterChange}>
+              <option value="all">Toutes les commandes</option>
+              <option value="fulfilled">Commandes traitées</option>
+              <option value="not-fulfilled">Commandes non traitées</option>
+            </select>
+          </div>
+          <div className="pagination">
+            <button onClick={() => paginate(1)} className="page-symbol">{"<<"}</button>
+            <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="page-nav">{"<"}</button>
+            {pageNumbers.slice(startPage - 1, endPage).map(number => (
+              <button key={number} className={`page-number ${currentPage === number ? "active" : ""}`} onClick={() => paginate(number)}>
+                {number}
+              </button>
+            ))}
+            <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === pageNumbers.length} className="page-nav">{">"}</button>
+            <button onClick={() => paginate(pageNumbers.length)} className="page-symbol">{">>"}</button>
+          </div>
         </div>
 
         <table className="Orders-table">
@@ -158,10 +168,12 @@ const Orders = () => {
               <th>Pays</th>
             </tr>
 
+
             <tr className="filter-row">
               <th className="th2">
                 <input
                   type="checkbox"
+                  className="checkbox-selectAll"
                   checked={selectAll}
                   onChange={handleSelectAll}
                 />
@@ -181,7 +193,7 @@ const Orders = () => {
                 >
                   <img
                     className="toggle-icon"
-                    src={expandAll ? invisibleIcon : visibleIcon}
+                    src={expandAll ? visibleIcon : invisibleIcon}
                     alt={
                       expandAll
                         ? "Cacher tous les détails"
@@ -268,6 +280,7 @@ const Orders = () => {
                 <td>
                 <input
                   type="checkbox"
+                  className="checkbox-select"
                   checked={selectedOrders.includes(order.id)}
                   onChange={() => handleSelectOrder(order.id)}
                 />

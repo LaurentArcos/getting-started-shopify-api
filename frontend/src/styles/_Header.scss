@@ -5,7 +5,7 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  padding: 4rem 0 2rem;
+  padding: 3rem 0 1rem;
   background: white;
   letter-spacing: 0.1rem;
   align-items: center;
@@ -20,11 +20,15 @@
 }
 
 .header-link:hover {
-  color: vars.$activeColor;
-  
+  background-color: vars.$colorSeagale;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
 }
 
 .header-link-active {
-  color: vars.$activeColor;
-  text-decoration: underline;
+  background-color: vars.$colorSeagale;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
 }

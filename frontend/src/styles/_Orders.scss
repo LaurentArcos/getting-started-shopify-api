@@ -250,3 +250,13 @@ th, td {
   color: #ccc; 
   cursor: not-allowed;
 }
+
+.checkbox-select {
+  transform: scale(1.7); 
+  accent-color: vars.$colorSeagale;
+}
+
+.checkbox-selectAll {
+  transform: scale(2.3); 
+  accent-color: vars.$colorSeagale;
+}
