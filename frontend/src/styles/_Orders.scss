@@ -98,10 +98,19 @@ input {
  color: vars.$colorSeagale;
  font-family: 'Exo-bold';
  font-size: 0.8rem;
+ max-width: 100px;
+}
+
+.id-input {
+  max-width: 50px;
 }
 
 .input-date {
   margin-bottom: 10px;
+}
+
+.input-date-div {
+  max-width: 180px;
 }
 
 .order-row.expanded {
@@ -188,7 +197,7 @@ table {
 th {
   background-color: vars.$colorSeagale; 
   color: white;
-  padding: 20px 15px;
+  padding: 20px 10px;
   font-family: 'Exo-bold';
 }
 
@@ -214,7 +223,9 @@ th, td {
   text-align: center;
 }
 
-
+.session-name {
+  font-family: 'exo-bold';
+}
 
 .pagination {
   display: flex;
