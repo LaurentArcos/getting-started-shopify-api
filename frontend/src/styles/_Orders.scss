@@ -61,12 +61,7 @@
   margin-top: 10px;
 }
 
-.order-details-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  flex-wrap: wrap; 
-}
+
 
 .order-details-item {
   flex: 1;
@@ -74,7 +69,7 @@
   padding: 10px;
   background-color: #f9f9f9; 
   border-radius: 5px; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  border: 1px solid black; 
   max-width: calc(25% - 10px); 
 }
 
@@ -105,6 +100,9 @@ input {
   margin-bottom: 10px;
 }
 
+.order-row.expanded {
+  background-color: #f2f2f2; 
+}
 
 .order-items {
   display: flex;
@@ -186,7 +184,7 @@ table {
 th {
   background-color: vars.$colorSeagale; 
   color: white;
-  padding: 20px;
+  padding: 20px 15px;
   font-family: 'Exo-bold';
 }
 
@@ -210,4 +208,45 @@ td {
 
 th, td {
   text-align: center;
+}
+
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.page-symbol, .page-number {
+  padding: 10px;
+  margin: 0 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.page-number:hover, .page-symbol:hover {
+  text-decoration: underline;
+}
+
+.page-number.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.page-nav {
+  padding: 10px;
+  margin: 0 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #000; 
+}
+
+.page-nav:disabled {
+  color: #ccc; 
+  cursor: not-allowed;
 }

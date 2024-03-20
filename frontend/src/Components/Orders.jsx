@@ -17,6 +17,36 @@ const Orders = () => {
   const [searchPostalCode, setSearchPostalCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(10);
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allOrderIds = filteredOrders.map((order) => order.id);
+      setSelectedOrders(allOrderIds);
+      setSelectAll(true);
+    } else {
+      setSelectedOrders([]);
+      setSelectAll(false);
+    }
+  };
+
+  // Fonction mise à jour pour sélectionner/désélectionner une commande
+  const handleSelectOrder = (orderId) => {
+    if (selectedOrders.includes(orderId)) {
+      setSelectedOrders(selectedOrders.filter((id) => id !== orderId));
+      // Désélectionner la case "Sélectionner tout" si une commande est désélectionnée
+      setSelectAll(false);
+    } else {
+      setSelectedOrders([...selectedOrders, orderId]);
+      // Vérifier si toutes les commandes sont sélectionnées après l'ajout
+      if (filteredOrders.length === selectedOrders.length + 1) {
+        setSelectAll(true);
+      }
+    }
+  };
 
   const filteredOrders = orders.filter((order) => {
     const orderDate = new Date(order.created_at).getTime();
@@ -78,11 +108,45 @@ const Orders = () => {
     }
   };
 
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Calculer le nombre total de pages
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredOrders.length / ordersPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  const numberOfPagesToShow = 2; 
+
+  // Générer les numéros de page à afficher
+  const startPage = Math.max(1, currentPage - numberOfPagesToShow);
+  const endPage = Math.min(pageNumbers.length, currentPage + numberOfPagesToShow);
+
+  // Fonction pour changer de page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
+
     <div>
+
+        <div className="pagination">
+          <button onClick={() => paginate(1)} className="page-symbol">{"<<"}</button>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="page-nav">{"<"}</button>
+          {pageNumbers.slice(startPage - 1, endPage).map(number => (
+            <button key={number} className={`page-number ${currentPage === number ? "active" : ""}`} onClick={() => paginate(number)}>
+              {number}
+            </button>
+          ))}
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === pageNumbers.length} className="page-nav">{">"}</button>
+          <button onClick={() => paginate(pageNumbers.length)} className="page-symbol">{">>"}</button>
+        </div>
+
         <table className="Orders-table">
           <thead>
             <tr className="title-row">
+              <th>Sélectionner</th>
               <th>Commande (ID)</th>
               <th>Produits</th>
               <th>Date</th>
@@ -95,6 +159,13 @@ const Orders = () => {
             </tr>
 
             <tr className="filter-row">
+              <th className="th2">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th className="th2">
                 <input
                   type="text"
@@ -191,9 +262,16 @@ const Orders = () => {
 
           <tbody>
           {filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
+            currentOrders.map((order) => (
               <React.Fragment key={order.id}>
-                <tr>
+                <tr className={`order-row ${expandedOrderId === order.id || expandAll ? 'expanded' : ''}`}>
+                <td>
+                <input
+                  type="checkbox"
+                  checked={selectedOrders.includes(order.id)}
+                  onChange={() => handleSelectOrder(order.id)}
+                />
+              </td>
                   <td>
                     <strong>{order.name}</strong> ({order.id})
                   </td>
@@ -243,7 +321,7 @@ const Orders = () => {
                 </tr>
                 {(expandedOrderId === order.id || expandAll) && (
                 <tr>
-                  <td colSpan="9" style={{ backgroundColor: "white", padding: 0 }}>
+                  <td colSpan="10" style={{ backgroundColor: "white", padding: 0 }}>
                     <div className="order-details">
                       {order.line_items.map((item, index) => (
                         <div key={index} className="order-details-item">
