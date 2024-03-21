@@ -217,6 +217,7 @@ const Orders = () => {
 
   return (
     <div className="orders">
+      <h2 className="orders-title">Liste des Commandes</h2>
       <div className="filter-pagination-container">
         <div className="filter-container">
         <button onClick={handleCreateSessionClick} className="middle-button">

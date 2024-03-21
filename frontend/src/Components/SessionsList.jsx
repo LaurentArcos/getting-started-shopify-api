@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useSessions } from "../utils/sessionContext";
+import { useNavigate } from "react-router-dom";
+import { useSessionSelection } from '../utils/sessionSelectionContext';
 
 const SessionsList = () => {
   const { sessions } = useSessions();
@@ -11,6 +13,13 @@ const SessionsList = () => {
   const [searchStatus, setSearchStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const { selectSession } = useSessionSelection();
+  const navigate = useNavigate();
+  const handleSessionClick = (sessionId) => {
+    selectSession(sessionId); // Mettre à jour le contexte avec la session sélectionnée
+    navigate(`/sessions/details/${sessionId}`);
+  };
 
   const filteredSessions = sessions.filter(session => {
     const sessionDate = new Date(session.createdAt);
@@ -92,7 +101,6 @@ const SessionsList = () => {
             </button>
           </div>
 
-
           <div className="sessionsPerPage-div">      
           <label htmlFor="ordersPerPage" className="orders-per-page-label">
               Nb de commandes par page :
@@ -109,8 +117,6 @@ const SessionsList = () => {
               ))}
           </select>
           </div>
-  
-
 
       <table className="sessions-table">
         <thead>
@@ -156,7 +162,7 @@ const SessionsList = () => {
         </thead>
         <tbody>
           {currentSessions.map((session) => (
-            <tr key={session.id}>
+            <tr key={session.id} onClick={() => handleSessionClick(session.id)} style={{cursor: 'pointer'}}>
               <td>{session.name}</td>
               <td>{session.status}</td>
               <td>{session.id}</td>
@@ -168,7 +174,7 @@ const SessionsList = () => {
           ))}
         </tbody>
       </table>
-      {/* Pagination controls */}
+      
     </div>
   );
 };

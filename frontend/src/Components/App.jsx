@@ -5,20 +5,23 @@ import Header from './Header';
 import Orders from './Orders';
 import Sessions from './Sessions'; 
 import Jacky from './Jacky';
+import { SessionSelectionProvider } from '../utils/sessionSelectionContext';
 
 function App() {
   return (
     <BrowserRouter>
       <DataProvider>
         <SessionProvider>
-          <div className="App">
-            <Header />
-            <Routes>
-              <Route path="/" element={<Orders />} />
-              <Route path="/sessions/*" element={<Sessions />} /> 
-              <Route path="/jacky" element={<Jacky />} />
-            </Routes>
-          </div>
+          <SessionSelectionProvider>
+            <div className="App">
+              <Header />
+              <Routes>
+                <Route path="/" element={<Orders />} />
+                <Route path="/sessions/*" element={<Sessions />} /> 
+                <Route path="/jacky" element={<Jacky />} />
+              </Routes>
+            </div>
+          </SessionSelectionProvider>
         </SessionProvider>
       </DataProvider>
     </BrowserRouter>

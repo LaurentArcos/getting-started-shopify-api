@@ -8,7 +8,7 @@ const HeaderSessions = () => {
         className={({ isActive }) =>
           isActive ? "header-sessions-link header-sessions-link-active" : "header-sessions-link"
         }
-        to="/sessions/list"
+        to="/sessions/liste"
       >
         Liste des Sessions
       </NavLink>
@@ -17,7 +17,7 @@ const HeaderSessions = () => {
         className={({ isActive }) =>
           isActive ? "header-sessions-link header-sessions-link-active" : "header-sessions-link"
         }
-        to="/sessions/commandes"
+        to="/sessions/details"
       >
         Détails de session
       </NavLink>

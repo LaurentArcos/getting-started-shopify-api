@@ -17,7 +17,7 @@ const Header = () => {
         className={({ isActive }) =>
           isActive ? "header-link header-link-active" : "header-link"
         }
-        to="/sessions/list"
+        to="/sessions/liste"
       >
         Sessions
       </NavLink>
