@@ -5,8 +5,7 @@ import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
 
 const Orders = () => {
-  const { orders, fetchMetafieldsForProduct, metafields } =
-    useContext(DataContext);
+  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext);
   const { sessions, addSession } = useSessions();
 
   const [expandedOrderId, setExpandedOrderId] = useState(null);
@@ -28,6 +27,11 @@ const Orders = () => {
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
+  const [showOrdersWithoutSession, setShowOrdersWithoutSession] = useState(false);
+
+  const handleShowOrdersWithoutSessionChange = () => {
+    setShowOrdersWithoutSession(!showOrdersWithoutSession);
+  };
 
   const handleOrdersPerPageChange = (e) => {
     setCurrentPage(1);
@@ -125,6 +129,11 @@ const Orders = () => {
       matchesSession = matchingOrderIds.has(order.id);
     }
 
+    if (showOrdersWithoutSession) {
+      const orderIdsInSessions = new Set(sessions.flatMap(session => session.orderIds));
+      return !orderIdsInSessions.has(order.id);
+    }
+
     return matchesFilters && matchesFulfillmentStatus && matchesSession;
   });
 
@@ -210,24 +219,19 @@ const Orders = () => {
     <div className="orders">
       <div className="filter-pagination-container">
         <div className="filter-container">
-          <label htmlFor="fulfillmentFilter">
-            Filtrer commandes par status :
-          </label>
-          <select
-            id="fulfillmentFilter"
-            value={fulfillmentFilter}
-            onChange={handleFulfillmentFilterChange}
-            className="filter-select"
-          >
-            <option value="all">Tout afficher</option>
-            <option value="fulfilled">Commandes traitées</option>
-            <option value="not-fulfilled">Commandes non traitées</option>
-          </select>
-        </div>
-
         <button onClick={handleCreateSessionClick} className="middle-button">
           Créer une session
         </button>
+          <label>
+            <input
+              type="checkbox"
+              checked={showOrdersWithoutSession}
+              onChange={handleShowOrdersWithoutSessionChange}
+            />
+            Afficher uniquement les commandes sans session
+          </label>
+        </div>
+
         <div>
           <div className="pagination">
             <button onClick={() => paginate(1)} className="page-nav">
@@ -291,6 +295,7 @@ const Orders = () => {
             <th>Session</th>
             <th>ID</th>
             <th>Produits</th>
+            <th>Status</th>
             <th>Date</th>
             <th>Transporteur</th>
             <th>Client</th>
@@ -341,6 +346,17 @@ const Orders = () => {
                   }
                 />
               </button>
+            </th>
+            <th className="th2">
+            <select
+            value={fulfillmentFilter}
+            onChange={handleFulfillmentFilterChange}
+            className="filter-select"
+          >
+            <option value="all">Tout afficher</option>
+            <option value="fulfilled">Traitées</option>
+            <option value="not-fulfilled">Non traitées</option>
+          </select>
             </th>
 
             <th className="th2 input-date-div">
@@ -450,21 +466,24 @@ const Orders = () => {
                         margin: 0,
                         display: "inline",
                       }}
-                    >
+                      >
                       <img
                         className="toggle-icon"
                         src={
                           expandedOrderId === order.id
-                            ? visibleIcon
-                            : invisibleIcon
+                          ? visibleIcon
+                          : invisibleIcon
                         }
                         alt={
                           expandedOrderId === order.id
-                            ? "Moins de détails"
-                            : "Plus de détails"
+                          ? "Moins de détails"
+                          : "Plus de détails"
                         }
-                      />
+                        />
                     </button>
+                  </td>
+                  <td>
+                    {order.fulfillment_status === "fulfilled" ? "Traitée" : "Non traitée"}
                   </td>
                   <td>{new Date(order.created_at).toLocaleDateString()}</td>
                   <td>
