@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-import PropTypes from 'prop-types'; 
+import { createContext, useContext, useState } from "react";
+import PropTypes from "prop-types";
 
 const SessionContext = createContext();
 
@@ -10,16 +10,19 @@ export const SessionProvider = ({ children }) => {
 
   const addSession = (sessionName, orderIds) => {
     const newSession = {
-      id: `session-${new Date().getTime()}`,
+      id: `${new Date().getTime()}`,
       name: sessionName,
       orderIds,
       createdAt: new Date(),
+      status: "Ouverte",
     };
     setSessions((prevSessions) => [...prevSessions, newSession]);
   };
 
   const removeSession = (sessionId) => {
-    setSessions((prevSessions) => prevSessions.filter(session => session.id !== sessionId));
+    setSessions((prevSessions) =>
+      prevSessions.filter((session) => session.id !== sessionId)
+    );
   };
 
   return (

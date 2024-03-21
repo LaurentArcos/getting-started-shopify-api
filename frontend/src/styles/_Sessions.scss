@@ -1,102 +1,31 @@
 @use 'vars';
 
-.sessions-list {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #F1F1F1;
-  padding: 15px 30px;
-  margin-top: 3px;
-  margin-bottom: 0;
-  cursor: pointer;
+.sessions-table {
+  width: 80%;
 }
 
-.sessions-list-name {
-  margin: 10px;
+.session-date {
+  width: 150px;
 }
 
-.sessions-list-name strong {
-  font-family: 'Exo-Bold';
-  font-size: 1.5rem;
-  margin: 1; /* Ajout d'une marge en bas */
-}
-
-.sessions-list-name :nth-child(2) {
-  margin-top: 0.5rem;
-  font-size: 1rem;
-}
-
-.sessions-list-name p:last-child {
-  font-style: italic;
-  font-size: 0.7rem;
-  margin-top: 0.5rem;
-}
-
-.sessions-list-details {
-  background-color: white; 
-  padding-top: 10px;
-  
-}
-
-.sessions-list-buttons {
-  display: flex;
-  flex-direction: column;
-}
-
-.sessions-list-buttons button:nth-child(1){
-  font-family: 'Exo-bold';
-  text-decoration: underline;
-  font-size: 0.9rem;
-  margin: 0 10px;
-  border: none;
-  padding: 0 0 10px 0;
-  color: vars.$colorSeagale;
-  cursor: pointer;
-}
-
-.sessions-list-buttons button:nth-child(1):hover {
-  scale: 1.1;
-}
-
-.sessions-list-buttons button:nth-child(2){
-  font-family: 'Exo-bold';
-  margin: 0 10px;
-  border: none;
-  padding: 0 10px  0 0;
-  color: vars.$activeColor;
-  cursor: pointer;
-}
-.sessions-list-buttons button:nth-child(2):hover{
-  scale: 1.1;
-}
-
-.jacky-button {
-  font-family: 'Exo-bold';
-  margin: 10px 40px;
-  padding: 10px;
-  color: white;
-  background-color: vars.$colorSeagale;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.jacky-button:hover {
-  scale: 1.1;
-}
-
-.fulfilled-button {
-  font-family: 'Exo-bold';
-  margin: 10px 20px 10px 0;
-  padding: 10px;
-  color: vars.$colorSeagale;
+.sessions input {
+  padding: 10px 5px;
+  border: 2px solid #f2f2f2;
   background-color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
+  color: vars.$colorSeagale;
+  font-family: 'Exo-bold';
+  font-size: 0.8rem;
+  max-width: 150px;
+ }
 
-.fulfilled-button:hover {
-  color: green;
-  background-color: white;
-  border: 2px solid green;
-  scale: 1.1;
+ .session-date input:nth-child(1) {
+  margin-bottom: 10px;
+ }
+
+ .sessionsPerPage-div {
+  display: flex;
+  justify-content: center; 
+  align-items: center;  
+  margin-top: 20px;
+  width: 100%;
 }

@@ -1,12 +1,14 @@
 import React, { useState, useContext } from "react";
 import { DataContext } from "../utils/dataContext";
-import { useSessions } from '../utils/sessionContext';
+import { useSessions } from "../utils/sessionContext";
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
 
 const Orders = () => {
   const { orders, fetchMetafieldsForProduct, metafields } =
     useContext(DataContext);
+  const { sessions, addSession } = useSessions();
+
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [expandAll, setExpandAll] = useState(false);
   const [searchSession, setSearchSession] = useState("");
@@ -22,41 +24,39 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage, setOrdersPerPage] = useState(5);
+  const [ordersPerPage, setOrdersPerPage] = useState(10);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
-  const { sessions, addSession } = useSessions();
 
   const handleOrdersPerPageChange = (e) => {
-    setCurrentPage(1); // Réinitialisez toujours à la première page lors du changement du nombre de commandes par page
+    setCurrentPage(1);
     setOrdersPerPage(Number(e.target.value));
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-        const allOrderIds = new Set(filteredOrders.map((order) => order.id));
-        setSelectedOrders(allOrderIds);
-        setSelectAll(true); 
+      const allOrderIds = new Set(filteredOrders.map((order) => order.id));
+      setSelectedOrders(allOrderIds);
+      setSelectAll(true);
     } else {
-        setSelectedOrders(new Set());
-        setSelectAll(false); 
+      setSelectedOrders(new Set());
+      setSelectAll(false);
     }
-};
+  };
 
   const handleSelectOrder = (orderId) => {
     setSelectedOrders((prevSelectedOrders) => {
-        const newSelectedOrders = new Set(prevSelectedOrders);
-        if (newSelectedOrders.has(orderId)) {
-            newSelectedOrders.delete(orderId);
-        } else {
-            newSelectedOrders.add(orderId);
-        }
+      const newSelectedOrders = new Set(prevSelectedOrders);
+      if (newSelectedOrders.has(orderId)) {
+        newSelectedOrders.delete(orderId);
+      } else {
+        newSelectedOrders.add(orderId);
+      }
 
-        // Mettre à jour l'état de selectAll basé sur si tous les ordres sont sélectionnés
-        setSelectAll(newSelectedOrders.size === filteredOrders.length);
+      setSelectAll(newSelectedOrders.size === filteredOrders.length);
 
-        return newSelectedOrders;
+      return newSelectedOrders;
     });
   };
 
@@ -72,43 +72,61 @@ const Orders = () => {
     }
 
     const matchesFilters =
-    (!startDate || orderDate >= start) &&
-    (!endDate || orderDate < end) &&
-    (searchID === "" || order.name.toLowerCase().includes(searchID.toLowerCase())) &&
-    (searchClient === "" ||
-      (`${order.customer?.first_name ?? ""} ${order.customer?.last_name ?? ""}`
-        .toLowerCase()
-        .includes(searchClient.toLowerCase()))) &&
-    (searchCity === "" ||
-      order.shipping_address?.city?.toLowerCase().includes(searchCity.toLowerCase())) &&
-    (searchCountry === "" ||
-      order.shipping_address?.country?.toLowerCase().includes(searchCountry.toLowerCase())) &&
-    (searchTransporter === "" ||
-      order.shipping_lines?.some((line) => line.title.toLowerCase().includes(searchTransporter.toLowerCase()))) &&
-    (searchAddress === "" ||
-      order.shipping_address?.address1?.toLowerCase().includes(searchAddress.toLowerCase())) &&
-    (searchPostalCode === "" ||
-      (order.shipping_address?.zip?.toString() ?? "").includes(searchPostalCode));
+      (!startDate || orderDate >= start) &&
+      (!endDate || orderDate < end) &&
+      (searchID === "" ||
+        order.name.toLowerCase().includes(searchID.toLowerCase())) &&
+      (searchClient === "" ||
+        `${order.customer?.first_name ?? ""} ${order.customer?.last_name ?? ""}`
+          .toLowerCase()
+          .includes(searchClient.toLowerCase())) &&
+      (searchCity === "" ||
+        order.shipping_address?.city
+          ?.toLowerCase()
+          .includes(searchCity.toLowerCase())) &&
+      (searchCountry === "" ||
+        order.shipping_address?.country
+          ?.toLowerCase()
+          .includes(searchCountry.toLowerCase())) &&
+      (searchTransporter === "" ||
+        order.shipping_lines?.some((line) =>
+          line.title.toLowerCase().includes(searchTransporter.toLowerCase())
+        )) &&
+      (searchAddress === "" ||
+        order.shipping_address?.address1
+          ?.toLowerCase()
+          .includes(searchAddress.toLowerCase())) &&
+      (searchPostalCode === "" ||
+        (order.shipping_address?.zip?.toString() ?? "").includes(
+          searchPostalCode
+        ));
 
-  let matchesFulfillmentStatus = true;
-  if (fulfillmentFilter === "fulfilled" && order.fulfillment_status !== "fulfilled") {
-    matchesFulfillmentStatus = false;
-  } else if (fulfillmentFilter === "not-fulfilled" && order.fulfillment_status === "fulfilled") {
-    matchesFulfillmentStatus = false;
-  }
+    let matchesFulfillmentStatus = true;
+    if (
+      fulfillmentFilter === "fulfilled" &&
+      order.fulfillment_status !== "fulfilled"
+    ) {
+      matchesFulfillmentStatus = false;
+    } else if (
+      fulfillmentFilter === "not-fulfilled" &&
+      order.fulfillment_status === "fulfilled"
+    ) {
+      matchesFulfillmentStatus = false;
+    }
 
-  let matchesSession = true;
-  if (searchSession !== "") {
-    const matchingSessions = sessions.filter((session) =>
-      session.name.toLowerCase().includes(searchSession.toLowerCase())
-    );
-    const matchingOrderIds = new Set(matchingSessions.flatMap((session) => session.orderIds));
-    matchesSession = matchingOrderIds.has(order.id);
-  }
+    let matchesSession = true;
+    if (searchSession !== "") {
+      const matchingSessions = sessions.filter((session) =>
+        session.name.toLowerCase().includes(searchSession.toLowerCase())
+      );
+      const matchingOrderIds = new Set(
+        matchingSessions.flatMap((session) => session.orderIds)
+      );
+      matchesSession = matchingOrderIds.has(order.id);
+    }
 
-  return matchesFilters && matchesFulfillmentStatus && matchesSession;
-});
-
+    return matchesFilters && matchesFulfillmentStatus && matchesSession;
+  });
 
   const handleFulfillmentFilterChange = (e) => {
     setFulfillmentFilter(e.target.value);
@@ -167,16 +185,17 @@ const Orders = () => {
     setIsCreatingSession(true);
   };
 
-  
   const handleSaveSession = () => {
     if (!sessionName.trim() || selectedOrders.size === 0) {
-      alert("Veuillez fournir un nom pour la session et sélectionner au moins une commande.");
+      alert(
+        "Veuillez fournir un nom pour la session et sélectionner au moins une commande."
+      );
       return;
     }
-  
+
     const orderIdsArray = Array.from(selectedOrders);
-    addSession(sessionName, orderIdsArray); 
-  
+    addSession(sessionName, orderIdsArray);
+
     setIsCreatingSession(false);
     setSessionName("");
     setSelectedOrders(new Set());
@@ -191,7 +210,9 @@ const Orders = () => {
     <div className="orders">
       <div className="filter-pagination-container">
         <div className="filter-container">
-          <label htmlFor="fulfillmentFilter">Filtrer les commandes :</label>
+          <label htmlFor="fulfillmentFilter">
+            Filtrer commandes par status :
+          </label>
           <select
             id="fulfillmentFilter"
             value={fulfillmentFilter}
@@ -207,61 +228,61 @@ const Orders = () => {
         <button onClick={handleCreateSessionClick} className="middle-button">
           Créer une session
         </button>
-<div>
-        <div className="pagination">
-          <button onClick={() => paginate(1)} className="page-nav">
-            {"<<"}
-          </button>
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="page-nav"
-          >
-            {"<"}
-          </button>
-          {pageNumbers.slice(startPage - 1, endPage).map((number) => (
-            <button
-              key={number}
-              className={`page-number ${
-                currentPage === number ? "active" : ""
-              }`}
-              onClick={() => paginate(number)}
-            >
-              {number}
+        <div>
+          <div className="pagination">
+            <button onClick={() => paginate(1)} className="page-nav">
+              {"<<"}
             </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === pageNumbers.length}
-            className="page-nav"
-          >
-            {">"}
-          </button>
-          <button
-            onClick={() => paginate(pageNumbers.length)}
-            className="page-nav"
-          >
-            {">>"}
-          </button>
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="page-nav"
+            >
+              {"<"}
+            </button>
+            {pageNumbers.slice(startPage - 1, endPage).map((number) => (
+              <button
+                key={number}
+                className={`page-number ${
+                  currentPage === number ? "active" : ""
+                }`}
+                onClick={() => paginate(number)}
+              >
+                {number}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === pageNumbers.length}
+              className="page-nav"
+            >
+              {">"}
+            </button>
+            <button
+              onClick={() => paginate(pageNumbers.length)}
+              className="page-nav"
+            >
+              {">>"}
+            </button>
+          </div>
+          <div className="orders-per-page-container">
+            <label htmlFor="ordersPerPage" className="orders-per-page-label">
+              Nb de commandes par page :
+            </label>
+            <select
+              className="ordersPerPage"
+              value={ordersPerPage}
+              onChange={handleOrdersPerPageChange}
+            >
+              {[5, 10, 20, 30, 50, 100].map((number) => (
+                <option key={number} value={number}>
+                  {number}
+                </option>
+              ))}
+            </select>
+          </div>{" "}
         </div>
-
-        <div className="orders-per-page-container">
-    <label htmlFor="ordersPerPage" className="orders-per-page-label">Nb de commandes par page :</label>
-    <select
-      className="ordersPerPage"
-      value={ordersPerPage}
-      onChange={handleOrdersPerPageChange}
-    >
-      {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50].map((number) => (
-        <option key={number} value={number}>
-          {number}
-        </option>
-      ))}
-    </select>
-  </div> </div>         
       </div>
-
-
 
       <table className="Orders-table">
         <thead>
@@ -399,19 +420,20 @@ const Orders = () => {
                   }`}
                 >
                   <td>
-                  <input
-                    type="checkbox"
-                    className="checkbox-select"
-                    checked={selectedOrders.has(order.id)}
-                    onChange={() => handleSelectOrder(order.id)}
-                  />
+                    <input
+                      type="checkbox"
+                      className="checkbox-select"
+                      checked={selectedOrders.has(order.id)}
+                      onChange={() => handleSelectOrder(order.id)}
+                    />
                   </td>
                   <td className="session-name">
-    {sessions.filter(session => session.orderIds.includes(order.id)).map(session => session.name).join(", ")}
-  </td>
-                  <td>
-                    {order.name}
+                    {sessions
+                      .filter((session) => session.orderIds.includes(order.id))
+                      .map((session) => session.name)
+                      .join(", ")}
                   </td>
+                  <td>{order.name}</td>
                   <td>
                     <span className="product-quantity">
                       {order.line_items.reduce(
@@ -501,23 +523,22 @@ const Orders = () => {
         </tbody>
       </table>
       {isCreatingSession && (
-      <>
-        
-        <div className="modal-backdrop"></div>
-        <div className="session-modal">
-          <h2>Créer une nouvelle session</h2>
-          <input
-            type="text"
-            placeholder="Nom de la session"
-            value={sessionName}
-            onChange={(e) => setSessionName(e.target.value)}
-          />
-          <button onClick={handleSaveSession}>Sauvegarder la session</button>
-          <button onClick={handleCancelSession}>Annuler</button>
-        </div>
-      </>
-    )}
-  </div>
+        <>
+          <div className="modal-backdrop"></div>
+          <div className="session-modal">
+            <h2>Créer une nouvelle session</h2>
+            <input
+              type="text"
+              placeholder="Nom de la session"
+              value={sessionName}
+              onChange={(e) => setSessionName(e.target.value)}
+            />
+            <button onClick={handleSaveSession}>Sauvegarder la session</button>
+            <button onClick={handleCancelSession}>Annuler</button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
