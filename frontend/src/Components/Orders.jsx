@@ -245,20 +245,20 @@ const Orders = () => {
           </button>
         </div>
 
-      <div>
-          <label htmlFor="ordersPerPage">Commandes par page :</label>
-          <select
-            id="ordersPerPage"
-            value={ordersPerPage}
-            onChange={handleOrdersPerPageChange}
-          >
-            {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50].map((number) => (
-              <option key={number} value={number}>
-                {number}
-              </option>
-            ))}
-          </select>
-        </div> </div>         
+        <div className="orders-per-page-container">
+    <label htmlFor="ordersPerPage" className="orders-per-page-label">Nb de commandes par page :</label>
+    <select
+      className="ordersPerPage"
+      value={ordersPerPage}
+      onChange={handleOrdersPerPageChange}
+    >
+      {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50].map((number) => (
+        <option key={number} value={number}>
+          {number}
+        </option>
+      ))}
+    </select>
+  </div> </div>         
       </div>
 
 

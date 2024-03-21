@@ -377,3 +377,34 @@ th, td {
   background-color: rgba(0, 0, 0, 0.822); 
   z-index: 999; 
 }
+
+.orders-per-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0; 
+}
+
+.ordersPerPage {
+  border: none;
+  color: red; 
+  cursor: pointer;
+  padding: 10px; 
+  background-color: transparent; 
+}
+
+.ordersPerPage option{
+  font-size: 1.2rem;
+  font-family: 'exo';
+}
+
+select.ordersPerPage{
+  font-size: 1.2rem;
+  font-family: 'exo';
+}
+
+
+.orders-per-page-label {
+  margin-right: 10px; 
+  color: vars.$colorSeagale; 
+}
