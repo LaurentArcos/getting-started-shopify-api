@@ -17,19 +17,11 @@ const Header = () => {
         className={({ isActive }) =>
           isActive ? "header-link header-link-active" : "header-link"
         }
-        to="/sessions"
+        to="/sessions/list"
       >
         Sessions
       </NavLink>
 
-      <NavLink
-        className={({ isActive }) =>
-          isActive ? "header-link header-link-active" : "header-link"
-        }
-        to="/picking"
-      >
-        Préparation
-      </NavLink>
     </div>
   );
 };

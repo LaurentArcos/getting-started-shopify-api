@@ -295,7 +295,7 @@ th, td {
 .filter-container label {
   font-family: 'exo-bold';
   font-size: 1.1rem;
-  margin-top: 20px;
+  margin: 30px 0 10px;
 }
 
 .filter-select {
@@ -388,12 +388,12 @@ th, td {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0; 
+  margin-bottom: 20px; 
 }
 
 .ordersPerPage {
   border: none;
-  color: red; 
+  color: vars.$colorSeagale;
   cursor: pointer;
   padding: 10px; 
   background-color: transparent; 
