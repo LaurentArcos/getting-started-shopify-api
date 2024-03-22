@@ -1,6 +1,13 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Header = () => {
+  const location = useLocation();
+
+ 
+  const checkIsActive = (path) => {
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <div className="header">
       <NavLink
@@ -14,14 +21,13 @@ const Header = () => {
       </NavLink>
 
       <NavLink
-        className={({ isActive }) =>
-          isActive ? "header-link header-link-active" : "header-link"
+        className={() =>
+          checkIsActive("/sessions") ? "header-link header-link-active" : "header-link"
         }
         to="/sessions/liste"
       >
         Sessions
       </NavLink>
-
     </div>
   );
 };
