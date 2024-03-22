@@ -1,26 +1,23 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSessions } from "../utils/sessionContext";
 import { useSessionSelection } from '../utils/sessionSelectionContext';
-
 
 const Preparation = () => {
   const { sessionId } = useParams();
   const { selectedPickingSessionId, selectSession } = useSessionSelection();
-  const navigate = useNavigate();
   const { sessions } = useSessions();
   const [selectedSessionId, setSelectedSessionId] = useState(sessionId || "");
 
-  // Update component state when URL parameter changes
   useEffect(() => {
-    setSelectedSessionId(sessionId);
-  }, [sessionId]);
+    setSelectedSessionId(selectedPickingSessionId);
+  }, [selectedPickingSessionId]);
 
   const handleSessionChange = (e) => {
-    const newSessionId = e.target.value;
-    selectSession(newSessionId);
-    navigate(`/sessions/preparation/${newSessionId}`);
+    selectSession(e.target.value);
   };
+
+  const currentSession = sessions.find(session => session.id === selectedPickingSessionId);
 
   return (
     <div>
@@ -35,13 +32,14 @@ const Preparation = () => {
           ))}
         </select>
       </div>
-      <div>
-        {/* Render session details based on `selectedSessionId` */}
-        {/* This is where you'd include the logic to display the details of the selected session */}
-        session {selectedSessionId}
-      </div>
+      {currentSession && (
+        <div>
+          <h3>{currentSession.name} (ID: {currentSession.id})</h3>
+          <p>Nombre de commandes: {currentSession.orderIds.length}</p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Preparation
+export default Preparation;

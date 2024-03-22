@@ -10,9 +10,7 @@ const Sessions = () => {
       <HeaderSessions />
       <Routes>
         <Route path="liste" element={<SessionsList />} />
-        <Route path="details" element={<SessionDetails />} />
         <Route path="details/:id" element={<SessionDetails />} />
-        <Route path="preparation" element={<Preparation />} />
         <Route path="preparation/:id" element={<Preparation />} />
       </Routes>
     </div>
