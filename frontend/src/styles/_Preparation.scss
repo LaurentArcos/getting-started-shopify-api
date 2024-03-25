@@ -1,3 +1,5 @@
+@use 'vars';
+
 .jacky {
   width: 70%;
   border-collapse: collapse;
@@ -12,24 +14,6 @@
 
 .jacky th {
   background-color: #f1f1f1;
-}
-
-.print-button {
-  display: flex;
-  margin: 3rem auto 0;
-  justify-content: center;
-}
-
-.print-button button {
-  font-family: "Exo";
-  font-size: 1rem;
-  padding: 10px 20px;
-  background-color: #F1F1F1;
-  color: var(--colorSeagale);
-  border-radius: 10px;
-  margin: 0.5rem 0;
-  border: 1px solid var(--colorSeagale);
-  cursor: pointer;
 }
 
 .jacky-title {

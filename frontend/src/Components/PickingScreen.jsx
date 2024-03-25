@@ -13,7 +13,6 @@ const PickingScreen = () => {
   const [variants, setVariants] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Définition de l'ordre des tailles
   const sizeOrder = ["NO SIZE", "XXXS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
   useEffect(() => {
@@ -41,7 +40,6 @@ const PickingScreen = () => {
       });
     });
 
-    // Trier les variantes en utilisant la commande de taille définie
     productVariants.sort((a, b) => 
       a.metafieldValue.localeCompare(b.metafieldValue) || 
       a.title.localeCompare(b.title) || 

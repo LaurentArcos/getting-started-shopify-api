@@ -7,16 +7,15 @@ import { useSessionSelection } from '../utils/sessionSelectionContext';
     const getNavLinkClass = (path, requiresSelection = true) => {
       const resolvedPath = useResolvedPath(path);
       const isActive = useMatch({ path: resolvedPath.pathname, end: true });
-  
+
       let classes = "header-sessions-link";
-  
+      
       if (isActive) {
         classes += " header-sessions-link-active";
       }
       if (requiresSelection && !selectedPickingSessionId) {
         classes += " disabled-link";
       }
-  
       return classes;
     };
   

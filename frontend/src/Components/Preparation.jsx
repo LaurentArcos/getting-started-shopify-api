@@ -74,8 +74,12 @@ const Preparation = () => {
   };
 
   const handlePrint = () => {
+
     window.print();
+    
   };
+
+  
 
   const handleStartPickingClick = () => {
     const selectedSession = sessions.find(session => session.id === selectedPickingSessionId);
@@ -85,7 +89,7 @@ const Preparation = () => {
   };
 
   return (
-    <div>
+    <div id="printableArea">
       <div className="orders-title">
         <label htmlFor="sessionSelect">Session: </label>
         <select className="sessionSelect" value={selectedPickingSessionId || ''} onChange={handleSessionChange}>
@@ -119,11 +123,11 @@ const Preparation = () => {
         <tbody>
   {displayData.map(({ ref, title, colors }, index) => (
     colors.map((color, colorIndex) => (
-      <tr key={`${index}-${colorIndex}`}>
+      <tr key={`${index}-${colorIndex}`} className={`color-row ${index % 2 === 0 ? "even" : "odd"}`}>
         {colorIndex === 0 && <td rowSpan={colors.length}>{ref}</td>}
         {colorIndex === 0 && <td rowSpan={colors.length}>{title}</td>}
         <td colSpan="2">{color.color}</td>
-        {["NO SIZE","XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"].map(size => (
+        {sizes.map(size => (
           <td key={size}>{color.sizeCounts[size] || 0}</td>
         ))}
         <td>{color.total}</td>

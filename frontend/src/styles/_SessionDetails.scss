@@ -55,3 +55,23 @@
   background-color: #e0e0e0;
   color: vars.$colorSeagale;
 }
+
+@media print {
+
+  .header {
+    visibility: hidden;
+  }
+
+  .header-sessions {
+    visibility: hidden;
+  }
+  
+  .print-button {
+    visibility: hidden;
+  }
+
+  .orders-title {
+    margin-top: -200px;
+    margin-bottom: -50px;
+  }
+}
