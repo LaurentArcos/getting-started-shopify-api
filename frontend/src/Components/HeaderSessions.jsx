@@ -4,7 +4,7 @@ import { useSessionSelection } from '../utils/sessionSelectionContext';
   const HeaderSessions = () => {
     const { selectedPickingSessionId } = useSessionSelection();
   
-    const getNavLinkClass = (path, requiresSelection = true) => {
+    const useNavLinkClass = (path, requiresSelection = true) => {
       const resolvedPath = useResolvedPath(path);
       const isActive = useMatch({ path: resolvedPath.pathname, end: true });
 
@@ -29,19 +29,19 @@ import { useSessionSelection } from '../utils/sessionSelectionContext';
   return (
     <div className="header-sessions">
       <div className="header-sessions-links">
-        <NavLink to="/sessions/liste" className={getNavLinkClass("/sessions/liste", false)}>
+        <NavLink to="/sessions/liste" className={useNavLinkClass("/sessions/liste", false)}>
           Liste des Sessions
         </NavLink>
         <NavLink 
           to={`/sessions/details/${selectedPickingSessionId || ""}`} 
-          className={getNavLinkClass(`/sessions/details/${selectedPickingSessionId || ""}`)}
+          className={useNavLinkClass(`/sessions/details/${selectedPickingSessionId || ""}`)}
           onClick={(e) => handleClick(e, `/sessions/details/${selectedPickingSessionId}`)}
         >
           Détails de session
         </NavLink>
         <NavLink 
           to={`/sessions/preparation/${selectedPickingSessionId || ""}`} 
-          className={getNavLinkClass(`/sessions/preparation/${selectedPickingSessionId || ""}`)}
+          className={useNavLinkClass(`/sessions/preparation/${selectedPickingSessionId || ""}`)}
           onClick={(e) => handleClick(e, `/sessions/preparation/${selectedPickingSessionId}`)}
         >
           Préparation

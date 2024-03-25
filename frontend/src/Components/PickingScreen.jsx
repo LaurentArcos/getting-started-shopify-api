@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
@@ -7,7 +7,7 @@ const PickingScreen = () => {
   const { orders, metafields } = useContext(DataContext);
   const { name } = useParams();
   const { sessions } = useSessions();
-  const session = sessions.find(session => session.name === name);
+  const session = useMemo(() => sessions.find(s => s.name === name), [sessions, name]);
   const sessionId = session ? session.id : '';
 
   const [variants, setVariants] = useState([]);
@@ -47,7 +47,7 @@ const PickingScreen = () => {
       sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size)
     );
     setVariants(productVariants);
-  }, [name, sessions, orders, metafields, sizeOrder]);
+  }, [ ]);
 
   const goToPreviousVariant = () => setCurrentIndex(prevIndex => Math.max(0, prevIndex - 1));
   const goToNextVariant = () => setCurrentIndex(prevIndex => Math.min(variants.length - 1, prevIndex + 1));
