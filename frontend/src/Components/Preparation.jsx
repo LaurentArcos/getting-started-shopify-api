@@ -2,13 +2,15 @@ import { useEffect, useContext, useState } from "react";
 import { DataContext } from "../utils/dataContext";
 import { useSessionSelection } from '../utils/sessionSelectionContext';
 import { useSessions } from "../utils/sessionContext";
+import { useNavigate } from 'react-router-dom';
 
-const PreparationAndDetails = () => {
+const Preparation = () => {
   const { sessions } = useSessions();
   const { selectedPickingSessionId, selectSession } = useSessionSelection();
   const { orders, metafields, fetchMetafieldsForProduct } = useContext(DataContext);
   const [displayData, setDisplayData] = useState([]);
   const sizes = ["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+  const navigate = useNavigate();
 
   useEffect(() => {
     const currentSessionOrders = selectedPickingSessionId
@@ -75,6 +77,13 @@ const PreparationAndDetails = () => {
     window.print();
   };
 
+  const handleStartPickingClick = () => {
+    const selectedSession = sessions.find(session => session.id === selectedPickingSessionId);
+    const sessionName = selectedSession ? selectedSession.name : '';
+
+    navigate(`/sessions/picking/${encodeURIComponent(sessionName)}`);
+  };
+
   return (
     <div>
       <div className="orders-title">
@@ -88,13 +97,13 @@ const PreparationAndDetails = () => {
       </div>
       <div className='print-button'>
         <button onClick={handlePrint}>Imprimer</button>
-      </div>
-  
+      
+        <button onClick={handleStartPickingClick}>Démarrer Picking</button>
+       </div>
       <table>
       <thead>
           <tr>
-            <th colSpan="3"></th>
-            <th>Taille</th>
+            <th colSpan="4"></th>
             {sizes.map(size => <th key={size}>{size}</th>)}
             <th>Total</th>
           </tr>
@@ -125,8 +134,7 @@ const PreparationAndDetails = () => {
       </table>
     </div>
 
-
   );
 };
 
-export default PreparationAndDetails;
+export default Preparation;

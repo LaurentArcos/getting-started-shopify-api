@@ -6,6 +6,7 @@ import Orders from './Orders';
 import Sessions from './Sessions'; 
 import Jacky from './Jacky';
 import { SessionSelectionProvider } from '../utils/sessionSelectionContext';
+import PickingScreen from './PickingScreen';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/" element={<Orders />} />
                 <Route path="/sessions/*" element={<Sessions />} /> 
                 <Route path="/jacky" element={<Jacky />} />
+                <Route path="/sessions/picking/:name" element={<PickingScreen />} />
               </Routes>
             </div>
           </SessionSelectionProvider>
