@@ -501,7 +501,7 @@ const Orders = () => {
                 {(expandedOrderId === order.id || expandAll) && (
                   <tr>
                     <td
-                      colSpan="11"
+                      colSpan="12"
                       style={{ backgroundColor: "white", padding: 0 }}
                     >
                       <div className="order-details">
@@ -529,7 +529,7 @@ const Orders = () => {
           ) : (
             <tr>
               <td
-                colSpan="9"
+                colSpan="12"
                 style={{
                   textAlign: "center",
                   padding: "50px",

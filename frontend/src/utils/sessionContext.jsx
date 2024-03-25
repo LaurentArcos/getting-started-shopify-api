@@ -25,8 +25,18 @@ export const SessionProvider = ({ children }) => {
     );
   };
 
+  const removeOrderFromSession = (sessionId, orderId) => {
+    setSessions((prevSessions) =>
+      prevSessions.map((session) =>
+        session.id === sessionId
+          ? { ...session, orderIds: session.orderIds.filter((id) => id !== orderId) }
+          : session
+      )
+    );
+  };
+
   return (
-    <SessionContext.Provider value={{ sessions, addSession, removeSession }}>
+    <SessionContext.Provider value={{ sessions, addSession, removeSession, removeOrderFromSession }}>
       {children}
     </SessionContext.Provider>
   );

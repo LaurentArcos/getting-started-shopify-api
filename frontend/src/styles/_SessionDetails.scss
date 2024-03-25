@@ -1,0 +1,56 @@
+@use 'vars';
+
+.sessionSelect {
+  border: none;
+  font-size: 2rem;
+  width: 250px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sessionSelect:hover {
+  background-color: rgb(226, 221, 221);
+  border-radius: 5px;
+}
+
+.sessionNumberOrders {
+  font-size: 1.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.poubelle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+}
+
+.poubelle-div {
+  vertical-align: middle;
+}
+
+.print-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.print-button button{
+  padding: 20px 40px;
+  border: none;
+  background-color: vars.$colorSeagale;
+  color: white;
+  border-radius: 5px;
+  font-family: 'exo';
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.print-button button:hover{
+  background-color: #e0e0e0;
+  color: vars.$colorSeagale;
+}

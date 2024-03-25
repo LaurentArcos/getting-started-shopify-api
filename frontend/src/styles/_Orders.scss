@@ -18,7 +18,7 @@
 .toggle-icon {
   width: 24px;
   height: 24px; 
- vertical-align: bottom;
+  vertical-align: middle;
  padding: 0;
  border: none;
  background: none;
@@ -223,6 +223,7 @@ tr:nth-child(odd) {
 td {
   padding: 10px;
   text-align: left;
+  vertical-align: middle;
 }
 
 th, td {
@@ -299,7 +300,7 @@ th, td {
 }
 
 .filter-container label {
-  font-family: 'exo-bold';
+  font-family: 'exo';
   font-size: 1.1rem;
   margin: 30px 0 10px;
 }
