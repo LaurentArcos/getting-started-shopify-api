@@ -6,6 +6,7 @@ import { useSessionSelection } from '../utils/sessionSelectionContext';
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
 import poubelle from "../assets/poubelle.png";
+import printer from "../assets/printer.png";
 
 const SessionDetails = () => {
   const { sessionId } = useParams();
@@ -68,6 +69,10 @@ const SessionDetails = () => {
 
       return newSelectedOrders;
     });
+  };
+
+  const handlePrintClick = (orderName, sessionName) => {
+    alert(`Imprimer l'étiquette pour la commande "${orderName}" de la session "${sessionName}".`);
   };
 
 
@@ -213,6 +218,7 @@ const SessionDetails = () => {
             <th>Code postal</th>
             <th>Ville</th>
             <th>Pays</th>
+            <th>Imprimer</th>
             <th>Supprimer</th>
           </tr>
 
@@ -326,6 +332,7 @@ const SessionDetails = () => {
                 onChange={(e) => setSearchCountry(e.target.value)}
               />
             </th>
+            <th className="th2"></th>
             <th className="th2"><img src={poubelle} onClick={handleDeleteSessionClick} alt="suppression" style={{width: "30px"}}/></th>
           </tr>
         </thead>
@@ -395,10 +402,15 @@ const SessionDetails = () => {
                   <td>{order.shipping_address.city}</td>
                   <td>{order.shipping_address.country}</td>
                   <td className="poubelle-div">
-  <div className="poubelle" onClick={() => handleRemoveOrderFromSession(order.id)}>
-    <img src={poubelle} alt="suppression" style={{ width: "25px" }} />
-  </div>
-</td>
+                    <div className="poubelle">
+                      <img src={printer} alt="imprimer" onClick={() => handlePrintClick(order.name, currentSession.name)} style={{ width: "30px" }} />
+                    </div>
+                  </td>
+                  <td className="poubelle-div">
+                    <div className="poubelle" onClick={() => handleRemoveOrderFromSession(order.id)}>
+                      <img src={poubelle} alt="suppression" style={{ width: "25px" }} />
+                    </div>
+                  </td>
                 </tr>
                 {(expandedOrderId === order.id || expandAll) && (
                   <tr>
