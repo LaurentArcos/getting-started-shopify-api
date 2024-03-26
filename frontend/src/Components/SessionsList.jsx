@@ -62,8 +62,6 @@ const SessionsList = () => {
   return (
     <div className="sessions">
 
-      <h2 className="sessions-title">Liste des Sessions</h2>
-
       <div className="pagination">
       <button onClick={() => handlePageChange(1)} className="page-nav">
               {"<<"}

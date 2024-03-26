@@ -1,13 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
+import { useProducts } from '../utils/productContext';
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
-import loadingImage from '../assets/seagale.svg';
+import loadingImage from "../assets/seagale.svg";
 
 const Orders = () => {
-  const { orders, fetchMetafieldsForProduct, metafields, isLoading} = useContext(DataContext);
+  const { products } = useProducts();
+  const { orders, fetchMetafieldsForProduct, metafields, isLoading } =
+    useContext(DataContext);
   const { sessions, addSession } = useSessions();
 
   const [expandedOrderId, setExpandedOrderId] = useState(null);
@@ -29,8 +32,8 @@ const Orders = () => {
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
-  const [showOrdersWithoutSession, setShowOrdersWithoutSession] = useState(false);
-
+  const [showOrdersWithoutSession, setShowOrdersWithoutSession] =
+    useState(false);
 
   const handleShowOrdersWithoutSessionChange = () => {
     setShowOrdersWithoutSession(!showOrdersWithoutSession);
@@ -40,6 +43,11 @@ const Orders = () => {
     setCurrentPage(1);
     setOrdersPerPage(Number(e.target.value));
   };
+
+  useEffect(() => {
+    console.log(products);
+    console.log(orders);
+    }, [products,orders]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -133,7 +141,9 @@ const Orders = () => {
     }
 
     if (showOrdersWithoutSession) {
-      const orderIdsInSessions = new Set(sessions.flatMap(session => session.orderIds));
+      const orderIdsInSessions = new Set(
+        sessions.flatMap((session) => session.orderIds)
+      );
       return !orderIdsInSessions.has(order.id);
     }
 
@@ -219,17 +229,21 @@ const Orders = () => {
   };
 
   if (isLoading) {
-    return <div className="loader-container"><img src={loadingImage} alt="Chargement..." className="loader" /></div>;
+    return (
+      <div className="loader-container">
+        <img src={loadingImage} alt="Chargement..." className="loader" />
+      </div>
+    );
   }
 
   return (
     <div className="orders">
-      <h2 className="orders-title">Liste des Commandes</h2>
+      
       <div className="filter-pagination-container">
         <div className="filter-container">
-        <button onClick={handleCreateSessionClick} className="middle-button">
-          Créer une session
-        </button>
+          <button onClick={handleCreateSessionClick} className="middle-button">
+            Créer une session
+          </button>
           <label>
             <input
               type="checkbox"
@@ -356,15 +370,15 @@ const Orders = () => {
               </button>
             </th>
             <th className="th2">
-            <select
-            value={fulfillmentFilter}
-            onChange={handleFulfillmentFilterChange}
-            className="filter-select"
-          >
-            <option value="all">Tout afficher</option>
-            <option value="fulfilled">Traitées</option>
-            <option value="not-fulfilled">Non traitées</option>
-          </select>
+              <select
+                value={fulfillmentFilter}
+                onChange={handleFulfillmentFilterChange}
+                className="filter-select"
+              >
+                <option value="all">Tout afficher</option>
+                <option value="fulfilled">Traitées</option>
+                <option value="not-fulfilled">Non traitées</option>
+              </select>
             </th>
 
             <th className="th2 input-date-div">
@@ -452,17 +466,17 @@ const Orders = () => {
                     />
                   </td>
                   <td className="session-name">
-  {sessions
-    .filter((session) => session.orderIds.includes(order.id))
-    .map((session, index, array) => (
-      <React.Fragment key={session.id}>
-        <Link to={`/sessions/details/${session.id}`}>
-          {session.name}
-        </Link>
-        {index < array.length - 1 ? ', ' : ''}
-      </React.Fragment>
-    ))}
-</td>
+                    {sessions
+                      .filter((session) => session.orderIds.includes(order.id))
+                      .map((session, index, array) => (
+                        <React.Fragment key={session.id}>
+                          <Link to={`/sessions/details/${session.id}`}>
+                            {session.name}
+                          </Link>
+                          {index < array.length - 1 ? ", " : ""}
+                        </React.Fragment>
+                      ))}
+                  </td>
                   <td>{order.name}</td>
                   <td>
                     <span className="product-quantity">
@@ -480,24 +494,26 @@ const Orders = () => {
                         margin: 0,
                         display: "inline",
                       }}
-                      >
+                    >
                       <img
                         className="toggle-icon"
                         src={
                           expandedOrderId === order.id
-                          ? visibleIcon
-                          : invisibleIcon
+                            ? visibleIcon
+                            : invisibleIcon
                         }
                         alt={
                           expandedOrderId === order.id
-                          ? "Moins de détails"
-                          : "Plus de détails"
+                            ? "Moins de détails"
+                            : "Plus de détails"
                         }
-                        />
+                      />
                     </button>
                   </td>
                   <td>
-                    {order.fulfillment_status === "fulfilled" ? "Traitée" : "Non traitée"}
+                    {order.fulfillment_status === "fulfilled"
+                      ? "Traitée"
+                      : "Non traitée"}
                   </td>
                   <td>{new Date(order.created_at).toLocaleDateString()}</td>
                   <td>

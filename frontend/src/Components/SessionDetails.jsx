@@ -21,7 +21,6 @@ const SessionDetails = () => {
 
 
   useEffect(() => {
-    console.log("Session ID from URL:", id);
     if (id) {
       selectSession(id);
     }
@@ -204,7 +203,7 @@ const SessionDetails = () => {
   return (
     <div>
       <div className="orders-title">
-        <label htmlFor="sessionSelect">Détail de la session: </label>
+        <label htmlFor="sessionSelect">Session: </label>
         <select
           className="sessionSelect"
           value={selectedSessionId}
