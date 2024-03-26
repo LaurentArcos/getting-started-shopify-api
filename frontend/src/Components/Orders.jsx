@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
 import visibleIcon from "../assets/visible.png";
@@ -451,11 +452,17 @@ const Orders = () => {
                     />
                   </td>
                   <td className="session-name">
-                    {sessions
-                      .filter((session) => session.orderIds.includes(order.id))
-                      .map((session) => session.name)
-                      .join(", ")}
-                  </td>
+  {sessions
+    .filter((session) => session.orderIds.includes(order.id))
+    .map((session, index, array) => (
+      <React.Fragment key={session.id}>
+        <Link to={`/sessions/details/${session.id}`}>
+          {session.name}
+        </Link>
+        {index < array.length - 1 ? ', ' : ''}
+      </React.Fragment>
+    ))}
+</td>
                   <td>{order.name}</td>
                   <td>
                     <span className="product-quantity">
