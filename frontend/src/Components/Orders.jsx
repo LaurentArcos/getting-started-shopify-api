@@ -298,7 +298,7 @@ const Orders = () => {
       <table className="Orders-table">
         <thead>
           <tr className="title-row">
-            <th>Sélectionner</th>
+            <th></th>
             <th>Session</th>
             <th>ID</th>
             <th>Produits</th>

@@ -43,8 +43,7 @@ const SessionDetails = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
 
-  
- 
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const allOrderIds = new Set(filteredOrders.map((order) => order.id));
@@ -207,7 +206,7 @@ const SessionDetails = () => {
       <table className="Orders-table">
         <thead>
           <tr className="title-row">
-            <th>Sélectionner</th>
+            <th></th>
             <th>ID</th>
             <th>Produits</th>
             <th>Status</th>

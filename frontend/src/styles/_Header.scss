@@ -18,6 +18,7 @@
   color: vars.$colorSeagale;
   text-decoration: none;
   transition: color 0.3s ease;
+  padding: 20px 30px;
 }
 
 .header-link:hover {
@@ -59,7 +60,7 @@
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
-
+  padding: 15px;
 }
 
 .header-sessions-link:hover {
