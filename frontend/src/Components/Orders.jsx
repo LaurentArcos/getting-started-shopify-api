@@ -3,9 +3,10 @@ import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
+import loadingImage from '../assets/seagale.svg';
 
 const Orders = () => {
-  const { orders, fetchMetafieldsForProduct, metafields } = useContext(DataContext);
+  const { orders, fetchMetafieldsForProduct, metafields, isLoading} = useContext(DataContext);
   const { sessions, addSession } = useSessions();
 
   const [expandedOrderId, setExpandedOrderId] = useState(null);
@@ -23,11 +24,12 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage, setOrdersPerPage] = useState(10);
+  const [ordersPerPage, setOrdersPerPage] = useState(50);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const [showOrdersWithoutSession, setShowOrdersWithoutSession] = useState(false);
+
 
   const handleShowOrdersWithoutSessionChange = () => {
     setShowOrdersWithoutSession(!showOrdersWithoutSession);
@@ -214,6 +216,10 @@ const Orders = () => {
     setIsCreatingSession(false);
     setSessionName("");
   };
+
+  if (isLoading) {
+    return <div className="loader-container"><img src={loadingImage} alt="Chargement..." className="loader" /></div>;
+  }
 
   return (
     <div className="orders">

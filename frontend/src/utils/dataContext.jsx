@@ -10,31 +10,30 @@ export const DataProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [metafields, setMetafields] = useState({});
   const [locationId, setLocationId] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
+  
   useEffect(() => {
-    fetchOrders();
-    fetchLocations();
+    fetchData();
   }, []);
 
 
-  const fetchOrders = () => {
-    fetch("http://localhost:3001/api/orders")
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data.orders || []);
-      })
-      .catch((error) => console.error("Error fetching orders:", error));
-  };
-
-  const fetchLocations = () => {
-    fetch("http://localhost:3001/api/locations")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.locations && data.locations.length > 0) {
-          setLocationId(data.locations[0].id);
-        }
-      })
-      .catch((error) => console.error("Error fetching locations:", error));
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const ordersResponse = await fetch("http://localhost:3001/api/orders");
+      const ordersData = await ordersResponse.json();
+      setOrders(ordersData.orders || []);
+  
+      const locationsResponse = await fetch("http://localhost:3001/api/locations");
+      const locationsData = await locationsResponse.json();
+      if (locationsData.locations && locationsData.locations.length > 0) {
+        setLocationId(locationsData.locations[0].id);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const fetchMetafieldsForProduct = async (productId) => {
@@ -54,7 +53,7 @@ export const DataProvider = ({ children }) => {
 
 
   return (
-    <DataContext.Provider value={{ orders, metafields, fetchMetafieldsForProduct, setOrders, setMetafields, locationId}}>
+    <DataContext.Provider value={{ orders, metafields, fetchMetafieldsForProduct, setOrders, setMetafields, locationId, isLoading}}>
       {children}
     </DataContext.Provider>
   );

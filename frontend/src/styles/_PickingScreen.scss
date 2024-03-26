@@ -37,9 +37,14 @@
   font-weight: normal;
 }
 
-.color, .size-quantity {
+.color, .size {
   margin: 20px 0;
-  font-size: 1.2em; 
+  font-size: 1.5em; 
+}
+
+.quantity {
+  margin: 20px 0;
+  font-size: 2em; 
 }
 
 .variant-index {

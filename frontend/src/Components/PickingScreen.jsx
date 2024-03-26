@@ -61,8 +61,9 @@ const PickingScreen = () => {
         <div className="variant-details">
           <h1>{currentVariant.title}</h1>
           <h2 className="metafield">{currentVariant.metafieldValue}</h2>
-          <p className="color">Couleur: {currentVariant.color}</p>
-          <p className="size-quantity">Taille {currentVariant.size} x {currentVariant.quantity}</p>
+          <p className="color">{currentVariant.color}</p>
+          <p className="size">Taille {currentVariant.size}</p>
+          <p className="quantity">x {currentVariant.quantity}</p>
         </div>
       )}
       <div className="navigation-buttons">
