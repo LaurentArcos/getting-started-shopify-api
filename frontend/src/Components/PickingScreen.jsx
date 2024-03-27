@@ -7,27 +7,31 @@ const PickingScreen = () => {
   const { orders, metafields } = useContext(DataContext);
   const { name } = useParams();
   const { sessions } = useSessions();
-  const session = useMemo(() => sessions.find(s => s.name === name), [sessions, name]);
+  const session = useMemo(() => sessions.find(s => s.name === decodeURIComponent(name)), [sessions, name]);
   const sessionId = session ? session.id : '';
 
   const [variants, setVariants] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const sizeOrder = ["NO SIZE", "XXXS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-
   useEffect(() => {
-    const sessionOrders = session ? orders.filter(order => session.orderIds.includes(order.id)) : [];
+    if (!session) return;
 
-    let productVariants = [];
+    const sessionOrders = orders.filter(order => session.orderIds.includes(order.id));
+
+    let skuVariants = [];
     sessionOrders.forEach(order => {
       order.line_items.forEach(item => {
+        // Utiliser le SKU comme identifiant unique pour chaque variante
+        const sku = item.sku;
         const metaValue = metafields[item.product_id] || 'Non spécifié';
-        const variantKey = `${item.product_id}-${item.variant_id}-${metaValue}`;
 
-        const variantIndex = productVariants.findIndex(variant => variant.key === variantKey);
+        // Vérifier si le variant du produit (identifié par le SKU) a déjà été ajouté
+        const variantIndex = skuVariants.findIndex(v => v.sku === sku);
         if (variantIndex === -1) {
-          productVariants.push({
-            key: variantKey,
+          skuVariants.push({
+            sku,
+            product_id: item.product_id,
+            variant_id: item.variant_id,
             title: item.title,
             color: item.variant_title.split(' / ')[1],
             size: item.variant_title.split(' / ')[0],
@@ -35,19 +39,13 @@ const PickingScreen = () => {
             metafieldValue: metaValue,
           });
         } else {
-          productVariants[variantIndex].quantity += item.quantity;
+          skuVariants[variantIndex].quantity += item.quantity;
         }
       });
     });
 
-    productVariants.sort((a, b) => 
-      a.metafieldValue.localeCompare(b.metafieldValue) || 
-      a.title.localeCompare(b.title) || 
-      a.color.localeCompare(b.color) || 
-      sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size)
-    );
-    setVariants(productVariants);
-  }, []);
+    setVariants(skuVariants);
+  }, [session, orders, metafields]);
 
   const goToPreviousVariant = () => setCurrentIndex(prevIndex => Math.max(0, prevIndex - 1));
   const goToNextVariant = () => setCurrentIndex(prevIndex => Math.min(variants.length - 1, prevIndex + 1));
@@ -58,9 +56,9 @@ const PickingScreen = () => {
     <div className="picking-screen">
       <Link to={`/sessions/details/${sessionId}`} className="back-link">Retour vers détails de la session</Link>
       <div className="navigation-buttons">
-        <button onClick={goToPreviousVariant} disabled={currentIndex === 0} className="navigation-button">←</button>
+        <button className="navigation-button" onClick={goToPreviousVariant} disabled={currentIndex === 0}>←</button>
         <span className="variant-index">{currentIndex + 1} / {variants.length}</span>
-        <button onClick={goToNextVariant} disabled={currentIndex === variants.length - 1} className="navigation-button">→</button>
+        <button className="navigation-button" onClick={goToNextVariant} disabled={currentIndex === variants.length - 1}>→</button>
       </div>
       {currentVariant && (
         <div className="variant-details">
@@ -72,8 +70,8 @@ const PickingScreen = () => {
         </div>
       )}
       <div className="validation-buttons">
-        <button onClick={goToPreviousVariant} className="problem-button">Problème</button>
-        <button onClick={goToNextVariant} className="validation-button">OK</button>
+        <button className="problem-button" onClick={goToNextVariant}>Problème</button>
+        <button className="validation-button" onClick={goToNextVariant}>OK</button>
       </div>
     </div>
   );

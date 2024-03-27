@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
@@ -43,11 +43,6 @@ const Orders = () => {
     setCurrentPage(1);
     setOrdersPerPage(Number(e.target.value));
   };
-
-  useEffect(() => {
-    console.log(products);
-    console.log(orders);
-  }, [products, orders]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -534,7 +529,7 @@ const Orders = () => {
                     >
                       <div className="order-details">
                         {order.line_items.map((item, index) => {
-                          
+
                           const product = products.find(
                             (p) => p.id === item.product_id
                           );

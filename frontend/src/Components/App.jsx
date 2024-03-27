@@ -8,6 +8,7 @@ import Sessions from './Sessions';
 import { SessionSelectionProvider } from '../utils/sessionSelectionContext';
 import PickingScreen from './PickingScreen';
 import NotFound from './NotFound';
+import { ProblemProvider } from '../utils/problemContext';
 
 function App() {
   return (
@@ -16,15 +17,17 @@ function App() {
         <SessionProvider>
           <ProductProvider>
             <SessionSelectionProvider>
-              <div className="App">
-                <Header />
-                <Routes>
-                  <Route path="/" element={<Orders />} />
-                  <Route path="/sessions/*" element={<Sessions />} /> 
-                  <Route path="/sessions/picking/:name" element={<PickingScreen />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
+              <ProblemProvider>
+                <div className="App">
+                  <Header />
+                  <Routes>
+                    <Route path="/" element={<Orders />} />
+                    <Route path="/sessions/*" element={<Sessions />} /> 
+                    <Route path="/sessions/picking/:name" element={<PickingScreen />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+              </ProblemProvider>
             </SessionSelectionProvider>
           </ProductProvider>
         </SessionProvider>

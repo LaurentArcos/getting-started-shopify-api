@@ -73,7 +73,6 @@
 .navigation-button:hover {
   background-color: #cccccc;
   color: vars.$colorSeagale;
-  
 }
 
 .navigation-button:disabled {
@@ -114,4 +113,13 @@
 .validation-button:hover {
   background-color: #cccccc;
   color: vars.$colorSeagale; 
+}
+
+.problem-button:hover {
+  background-color: #cccccc;
+  color: vars.$colorSeagale; 
+}
+
+.problematic {
+  color: red;
 }

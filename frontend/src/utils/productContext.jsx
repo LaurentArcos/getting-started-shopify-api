@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from "prop-types";
-// Create Context
+
 export const ProductContext = createContext();
 
-// Custom hook for accessing context easily
+
 export const useProducts = () => useContext(ProductContext);
 
 export const ProductProvider = ({ children }) => {

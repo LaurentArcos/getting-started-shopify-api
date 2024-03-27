@@ -3,8 +3,10 @@ import { DataContext } from "../utils/dataContext";
 import { useSessionSelection } from '../utils/sessionSelectionContext';
 import { useSessions } from "../utils/sessionContext";
 import { useNavigate } from 'react-router-dom';
+// import { useProblems } from "../utils/ProblemContext";
 
 const Preparation = () => {
+  // const { isItemProblematic } = useProblems();
   const { sessions } = useSessions();
   const { selectedPickingSessionId, selectSession } = useSessionSelection();
   const { orders, metafields, fetchMetafieldsForProduct } = useContext(DataContext);
@@ -12,11 +14,12 @@ const Preparation = () => {
   const sizes = ["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const currentSessionOrders = selectedPickingSessionId
       ? sessions.find(session => session.id === selectedPickingSessionId)?.orderIds.map(orderId => orders.find(order => order.id === orderId)).filter(order => order)
       : [];
-
+  
     const loadMetafields = async () => {
       const promises = currentSessionOrders.flatMap(order => 
         order.line_items.map(item => {
@@ -27,48 +30,62 @@ const Preparation = () => {
         })
       );
       await Promise.all(promises);
-      aggregateOrders(currentSessionOrders);
+      aggregateData(currentSessionOrders); // Utilisez cette fonction pour l'agrégation basée sur le SKU
     };
-
+  
     loadMetafields();
   }, [selectedPickingSessionId, sessions, orders, metafields, fetchMetafieldsForProduct]);
-
-  const aggregateOrders = (currentSessionOrders) => {
-    let aggregated = {};
-    currentSessionOrders.forEach(order => {
-      order.line_items.forEach(({ product_id, variant_title, quantity, title }) => {
-        const [size, color] = variant_title.split(' / ');
+  
+  const aggregateData = (orders) => {
+    const aggregatedData = {};
+  
+    orders.forEach(order => {
+      order.line_items.forEach(item => {
+        const { sku, product_id, title, quantity } = item;
+        const [size, color] = item.variant_title.split(' / ');
         const metafieldValue = metafields[product_id] || 'Non spécifié';
-        const key = `${product_id}-${metafieldValue}`;
-
-        if (!aggregated[key]) {
-          aggregated[key] = {
-            ref: metafieldValue,
-            title: title,
-            colors: {},
+        // Utilisation d'une clé combinée de metafield et de titre pour le regroupement
+        const key = `${metafieldValue}-${title}-${color}`;
+  
+        if (!aggregatedData[key]) {
+          aggregatedData[key] = {
+            metafield: metafieldValue,
+            product: title,
+            color: color,
+            sizes: {},
+            sku, // Stocker le SKU si nécessaire pour l'affichage
+            rowSpan: 0, // Utilisé pour le "rowSpan" dans le rendu
           };
         }
-
-        if (!aggregated[key].colors[color]) {
-          aggregated[key].colors[color] = { sizeCounts: {}, total: 0 };
-        }
-
-        let colorData = aggregated[key].colors[color];
-        colorData.sizeCounts[size] = (colorData.sizeCounts[size] || 0) + quantity;
-        colorData.total += quantity;
+  
+        // Ajout ou mise à jour de la quantité pour la taille spécifique
+        aggregatedData[key].sizes[size] = (aggregatedData[key].sizes[size] || 0) + quantity;
       });
     });
-
-    setDisplayData(Object.values(aggregated).map(({ ref, title, colors }) => ({
-      ref,
-      title,
-      colors: Object.entries(colors).map(([color, data]) => ({
-        color,
-        ...data,
-      })),
-    })).sort((a, b) => a.ref.localeCompare(b.ref)));
+  
+    // Conversion en tableau pour le rendu et calcul du rowSpan
+    const sortedData = Object.values(aggregatedData).sort((a, b) => a.metafield.localeCompare(b.metafield) || a.product.localeCompare(b.product));
+  
+    // Calcul du rowSpan (nombre de lignes partageant le même metafield et produit)
+    const metafieldProductCounts = {};
+    sortedData.forEach(item => {
+      const groupKey = `${item.metafield}-${item.product}`;
+      if (!metafieldProductCounts[groupKey]) {
+        metafieldProductCounts[groupKey] = 1;
+      } else {
+        metafieldProductCounts[groupKey]++;
+      }
+    });
+  
+    // Assigner le rowSpan à chaque item
+    sortedData.forEach(item => {
+      const groupKey = `${item.metafield}-${item.product}`;
+      item.rowSpan = metafieldProductCounts[groupKey];
+    });
+  
+    setDisplayData(sortedData);
   };
-
+  
   const handleSessionChange = (e) => {
     selectSession(e.target.value);
   };
@@ -79,7 +96,6 @@ const Preparation = () => {
     
   };
 
-  
   const handleStartPickingClick = () => {
     const selectedSession = sessions.find(session => session.id === selectedPickingSessionId);
     const sessionName = selectedSession ? selectedSession.name : '';
@@ -103,36 +119,31 @@ const Preparation = () => {
       
         <button onClick={handleStartPickingClick}>Démarrer Picking</button>
        </div>
-      <table>
+      <table className="table-preparation">
       <thead>
-          <tr>
-            <th colSpan="4"></th>
-            {sizes.map(size => <th key={size}>{size}</th>)}
-            <th>Total</th>
-          </tr>
-          <tr>
-            <th>Ref</th>
-            <th>Produit</th>
-            <th>Couleur</th>
-            {sizes.map((size, index) => <th key={`size-header-${index}`}></th>)}
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-  {displayData.map(({ ref, title, colors }, index) => (
-    colors.map((color, colorIndex) => (
-      <tr key={`${index}-${colorIndex}`} className={`color-row ${index % 2 === 0 ? "even" : "odd"}`}>
-        {colorIndex === 0 && <td rowSpan={colors.length}>{ref}</td>}
-        {colorIndex === 0 && <td rowSpan={colors.length}>{title}</td>}
-        <td colSpan="2">{color.color}</td>
-        {sizes.map(size => (
-          <td key={size}>{color.sizeCounts[size] || 0}</td>
+  <tr>
+    <th>Ref</th>
+    <th>Produit</th>
+    <th>Couleur</th>
+    {sizes.map((size, index) => <th key={`size-header-${index}`}>{size}</th>)}
+    <th>Total</th>
+  </tr>
+</thead>
+<tbody>
+  {displayData.map((item, index) => {
+    const isFirstOfGroup = index === 0 || displayData[index - 1].metafield !== item.metafield || displayData[index - 1].product !== item.product;
+    return (
+      <tr key={index}>
+        {isFirstOfGroup && <td rowSpan={item.rowSpan}>{item.metafield}</td>}
+        {isFirstOfGroup && <td rowSpan={item.rowSpan}>{item.product}</td>}
+        <td className="size-column">{item.color}</td>
+        {sizes.map((size) => (
+          <td key={size} className="size-column">{item.sizes[size] || ''}</td>
         ))}
-        <td>{color.total}</td>
+        <td className="size-column">{Object.values(item.sizes).reduce((acc, qty) => acc + qty, 0)}</td>
       </tr>
-    ))
-  ))}
+    );
+  })}
 </tbody>
       </table>
     </div>
