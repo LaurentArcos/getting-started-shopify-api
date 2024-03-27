@@ -70,12 +70,12 @@
 }
 
 .navigation-button:hover {
-  background-color: white;
+  background-color: #cccccc;
   color: vars.$colorSeagale;
-  border: 1px solid vars.$colorSeagale;
+  
 }
 
 .navigation-button:disabled {
-  background-color: #cccccc;
+  background-color: #ebebeb;
   cursor: not-allowed;
 }

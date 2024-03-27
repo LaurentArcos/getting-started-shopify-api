@@ -24,14 +24,12 @@
 .header-link:hover {
   background-color: #e0e0e0; 
   color: vars.$colorSeagale;
-  padding: 20px 30px;
   border-radius: 5px;
 }
 
 .header-link-active {
   background-color: vars.$colorSeagale;
   color: white;
-  padding: 20px 30px;
   border-radius: 5px;
 }
 
@@ -65,14 +63,12 @@
 
 .header-sessions-link:hover {
   background-color: #e0e0e0; 
-  padding: 15px;
   color: vars.$colorSeagale;
 }
 
 .header-sessions-link-active {
   background-color: vars.$colorSeagale; 
   color: #fff;
-  padding: 15px;
 }
 
 .disabled-link {

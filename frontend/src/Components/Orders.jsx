@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
-import { useProducts } from '../utils/productContext';
+import { useProducts } from "../utils/productContext";
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
 import loadingImage from "../assets/seagale.svg";
@@ -47,7 +47,7 @@ const Orders = () => {
   useEffect(() => {
     console.log(products);
     console.log(orders);
-    }, [products,orders]);
+  }, [products, orders]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -238,7 +238,6 @@ const Orders = () => {
 
   return (
     <div className="orders">
-      
       <div className="filter-pagination-container">
         <div className="filter-container">
           <button onClick={handleCreateSessionClick} className="middle-button">
@@ -534,21 +533,49 @@ const Orders = () => {
                       style={{ backgroundColor: "white", padding: 0 }}
                     >
                       <div className="order-details">
-                        {order.line_items.map((item, index) => (
-                          <div key={index} className="order-details-item">
-                            <div className="item-name">
-                              {item.title} - qté : {item.quantity}
+                        {order.line_items.map((item, index) => {
+                          
+                          const product = products.find(
+                            (p) => p.id === item.product_id
+                          );
+
+                          const variantImage = product?.images.find((image) =>
+                            image.variant_ids.includes(item.variant_id)
+                          );
+
+                          const imageUrl =
+                            variantImage?.src ||
+                            product?.images?.[0]?.src ||
+                            "";
+
+                          return (
+                            <div key={index} className="order-details-item">
+                              {imageUrl && (
+                                <img
+                                  src={imageUrl}
+                                  alt={`Image de ${item.title}`}
+                                  className="order-details-item-img"
+                                />
+                              )}
+                              <div className="order-details-item-info">
+                                <div className="item-name">
+                                  {item.title} - qté : {item.quantity}
+                                </div>
+                                <div>{item.variant_title}</div>
+                                <div className="item-sku">
+                                  (sku: {item.sku})
+                                </div>
+                                <div className="item-id">
+                                  (id: {item.product_id})
+                                </div>
+                                <div>
+                                  (Métafield Value:{" "}
+                                  {metafields[item.product_id]})
+                                </div>
+                              </div>
                             </div>
-                            <div>{item.variant_title}</div>
-                            <div className="item-sku">(sku: {item.sku})</div>
-                            <div className="item-id">
-                              (id: {item.product_id})
-                            </div>
-                            <div>
-                              (Métafield Value: {metafields[item.product_id]})
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </td>
                   </tr>

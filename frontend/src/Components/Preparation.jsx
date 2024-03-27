@@ -80,7 +80,6 @@ const Preparation = () => {
   };
 
   
-
   const handleStartPickingClick = () => {
     const selectedSession = sessions.find(session => session.id === selectedPickingSessionId);
     const sessionName = selectedSession ? selectedSession.name : '';
