@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSessions } from "../utils/sessionContext";
 import { DataContext } from "../utils/dataContext";
+import { useProducts } from "../utils/productContext";
 import { useSessionSelection } from "../utils/sessionSelectionContext";
 import visibleIcon from "../assets/visible.png";
 import invisibleIcon from "../assets/invisible.png";
@@ -9,6 +10,7 @@ import poubelle from "../assets/poubelle.png";
 import printer from "../assets/printer.png";
 
 const SessionDetails = () => {
+  const { products } = useProducts();
   let { id } = useParams()
   const { sessionId } = useParams();
   const { selectedPickingSessionId, selectSession } = useSessionSelection();
@@ -459,32 +461,60 @@ const SessionDetails = () => {
                     </td>
                   </tr>
                   {(expandedOrderId === order.id || expandAll) && (
-                    <tr>
-                      <td
-                        colSpan="12"
-                        style={{ backgroundColor: "white", padding: 0 }}
-                      >
-                        <div className="order-details">
-                          {order.line_items.map((item, index) => (
+                  <tr>
+                    <td
+                      colSpan="12"
+                      style={{ backgroundColor: "white", padding: 0 }}
+                    >
+                      <div className="order-details">
+                        {order.line_items.map((item, index) => {
+                          
+                          const product = products.find(
+                            (p) => p.id === item.product_id
+                          );
+
+                          const variantImage = product?.images.find((image) =>
+                            image.variant_ids.includes(item.variant_id)
+                          );
+
+                          const imageUrl =
+                            variantImage?.src ||
+                            product?.images?.[0]?.src ||
+                            "";
+
+                          return (
                             <div key={index} className="order-details-item">
-                              <div className="item-name">
-                                {item.title} - qté : {item.quantity}
-                              </div>
-                              <div>{item.variant_title}</div>
-                              <div className="item-sku">(sku: {item.sku})</div>
-                              <div className="item-id">
-                                (id: {item.product_id})
-                              </div>
-                              <div>
-                                (Métafield Value: {metafields[item.product_id]})
+                              {imageUrl && (
+                                <img
+                                  src={imageUrl}
+                                  alt={`Image de ${item.title}`}
+                                  className="order-details-item-img"
+                                />
+                              )}
+                              <div className="order-details-item-info">
+                                <div className="item-name">
+                                  {item.title} - qté : {item.quantity}
+                                </div>
+                                <div>{item.variant_title}</div>
+                                <div className="item-sku">
+                                  (sku: {item.sku})
+                                </div>
+                                <div className="item-id">
+                                  (id: {item.product_id})
+                                </div>
+                                <div>
+                                  (Métafield Value:{" "}
+                                  {metafields[item.product_id]})
+                                </div>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
+                          );
+                        })}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
               ))
             ) : (
               <tr>

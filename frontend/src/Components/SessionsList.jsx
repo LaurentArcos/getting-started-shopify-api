@@ -165,8 +165,8 @@ const SessionsList = () => {
               <td>{session.status}</td>
               <td>{session.id}</td>
               <td>{session.orderIds.length}</td>
-              <td>{0 /* Example placeholder */}</td>
-              <td>{session.orderIds.length /* Example placeholder */}</td>
+              <td>{0}</td>
+              <td>{session.orderIds.length}</td>
               <td>{new Date(session.createdAt).toLocaleDateString()}</td>
             </tr>
           ))}
