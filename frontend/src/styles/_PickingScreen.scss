@@ -14,7 +14,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin: 50px 0px;
+  margin: 50px 0px 30px;
   width: 100%;  
 }
 
@@ -60,9 +60,10 @@
 }
 
 .navigation-button {
-  padding: 10px 20px;
+  padding: 10px;
+  font-size: 1rem;
   cursor: pointer;
-  font-family: 'Exo';
+  font-family: 'Exo-Bold';
   background-color: vars.$colorSeagale;
   border: none;
   color: white;
@@ -78,4 +79,39 @@
 .navigation-button:disabled {
   background-color: #ebebeb;
   cursor: not-allowed;
+}
+
+.validation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.validation-button {
+  width: 100px;
+  height: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Exo-Bold';
+  background-color: green;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.problem-button {
+  width: 100px;
+  height: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Exo-Bold';
+  background-color: red;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.validation-button:hover {
+  background-color: #cccccc;
+  color: vars.$colorSeagale; 
 }
