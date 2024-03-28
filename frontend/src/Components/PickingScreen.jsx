@@ -40,13 +40,17 @@ const PickingScreen = () => {
   const sessionId = session ? session.id : null;
   const currentVariant = flatVariantList[currentIndex] || {};
   const variantIsProblematic = isProblematic(currentVariant.sku, currentVariant.size, sessionId);
+ 
+  const problemDetails = isProblematic(currentVariant.sku, currentVariant.size, sessionId);
   const handleProblemClick = () => {
-    addProblem({
-      sku: currentVariant.sku,
-      size: currentVariant.size,
-    }, sessionId);
+    const message = window.prompt("Veuillez décrire le problème :");
+    if (message) {
+      addProblem({
+        sku: currentVariant.sku,
+        size: currentVariant.size,
+      }, sessionId, message);
     goToNextVariant();
-  };
+  }};
 
   return (
     <div className="picking-screen">
@@ -62,10 +66,11 @@ const PickingScreen = () => {
         <p className="color">{currentVariant.color}</p>
         <p className="size">{currentVariant.size}</p>
         <p className="quantity">x {currentVariant.quantity}</p>
+        {problemDetails && <p className="problem-message">Problème : {problemDetails.message}</p>}
       </div>
       <div className="validation-buttons">
       <button className="problem-button" onClick={handleProblemClick}>Problème</button>
-        <button className="validation-button" onClick={goToNextVariant}>OK</button>
+      <button className="validation-button" onClick={goToNextVariant}>OK</button>
       </div>
     </div>
   );

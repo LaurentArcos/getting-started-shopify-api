@@ -6,20 +6,40 @@
 }
 
 .table-preparation th {
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border: 1px solid #ccc;
 }
 
-.size-column {
-  border-left: 1px solid #ccc; 
+.problem-message {
+  color: white;
+  background-color: rgb(207, 54, 54);
+  padding: 20px 150px;
 }
 
-.table-preparation .group-end {
-  border-bottom: 2px solid #000;
+.table-preparation .problematic {
+  background-color: rgb(207, 54, 54); 
+  color: white;
 }
 
-.table-preparation .metafield-separator td {
-  border-bottom: 2px solid #000;
-  padding: 0;
-  height: 2px;
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 50px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

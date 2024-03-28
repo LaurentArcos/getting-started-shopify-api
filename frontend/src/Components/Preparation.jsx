@@ -79,9 +79,10 @@ const Preparation = () => {
               {["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"].map(size => {
                   const isProblematicVariant = problems.some(problem => problem.sku === item.sku && problem.size === size && problem.sessionId === session.id);
                   return (
-                    <td key={size} style={{ backgroundColor: isProblematicVariant ? 'red' : 'white' }} className="size-column">
-                      {item.sizes[size] || ''}
-                    </td>
+                  <td key={size} className={`size-column ${isProblematicVariant ? 'problematic' : ''}`}
+                      title={isProblematicVariant ? problems.find(problem => problem.sku === item.sku && problem.size === size && problem.sessionId === session.id).message : ''}>
+                    {item.sizes[size] || ''}
+                  </td>
                   );
                 })}
               <td className="size-column" >{Object.values(item.sizes).reduce((acc, qty) => acc + qty, 0)}</td>
