@@ -77,7 +77,7 @@ const Preparation = () => {
                 {isFirstOfGroup && <td rowSpan={item.rowSpan}>{item.product}</td>}
               <td className="size-column">{item.color}</td>
               {["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"].map(size => {
-                  const isProblematicVariant = problems.some(problem => problem.sku === item.sku && problem.size === size);
+                  const isProblematicVariant = problems.some(problem => problem.sku === item.sku && problem.size === size && problem.sessionId === session.id);
                   return (
                     <td key={size} style={{ backgroundColor: isProblematicVariant ? 'red' : 'white' }} className="size-column">
                       {item.sizes[size] || ''}
