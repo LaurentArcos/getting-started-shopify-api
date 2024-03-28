@@ -11,7 +11,6 @@ const Preparation = () => {
   const { orders, metafields, fetchMetafieldsForProduct, } = useContext(DataContext);
   const navigate = useNavigate();
 
-  // Trouvez les IDs des commandes pour la session sélectionnée
   const session = sessions.find(session => session.id === selectedPickingSessionId);
   const sessionOrderIds = session ? session.orderIds : [];
   
@@ -26,8 +25,6 @@ const Preparation = () => {
     });
   }, [sessionOrderIds, orders, metafields, fetchMetafieldsForProduct]);
 
-
-  // Utilisez `useAggregatedData` pour obtenir les données agrégées
   const displayData = useAggregatedData(orders, metafields, sessionOrderIds);
 
   const handleSessionChange = (e) => {

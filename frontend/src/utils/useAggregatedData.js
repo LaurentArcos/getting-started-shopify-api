@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 const sizes = ["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 const isSize = (value) => {
-  // Vérification de sécurité pour s'assurer que value n'est pas undefined
+  
   const upperValue = value ? value.toUpperCase() : "";
   return sizes.includes(upperValue) || upperValue === "TAILLE UNIQUE";
 };
 
 const normalizeColor = (color) => {
-  // Assurez-vous que color n'est pas undefined avant de procéder
+  
   if (!color) return "Non spécifié";
   return color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
 };

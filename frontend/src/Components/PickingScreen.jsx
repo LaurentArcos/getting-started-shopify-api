@@ -1,74 +1,60 @@
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
+import { useAggregatedData } from '../utils/useAggregatedData';
 
+const sizesOrder = ["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 const PickingScreen = () => {
   const { orders, metafields } = useContext(DataContext);
   const { name } = useParams();
   const { sessions } = useSessions();
-  const session = useMemo(() => sessions.find(s => s.name === decodeURIComponent(name)), [sessions, name]);
-  const sessionId = session ? session.id : '';
+  const session = sessions.find(s => decodeURIComponent(name) === s.name);
+  const sessionOrderIds = session ? session.orderIds : [];
 
-  const [variants, setVariants] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Utilisation de useAggregatedData pour obtenir les données agrégées
+  const aggregatedData = useAggregatedData(orders, metafields, sessionOrderIds);
 
+  // Transformation des données agrégées en une liste plate pour le picking, avec tri par taille
+  const [flatVariantList, setFlatVariantList] = useState([]);
   useEffect(() => {
-    if (!session) return;
-
-    const sessionOrders = orders.filter(order => session.orderIds.includes(order.id));
-
-    let skuVariants = [];
-    sessionOrders.forEach(order => {
-      order.line_items.forEach(item => {
-        
-        const sku = item.sku;
-        const metaValue = metafields[item.product_id] || 'Non spécifié';
-
-        const variantIndex = skuVariants.findIndex(v => v.sku === sku);
-        if (variantIndex === -1) {
-          skuVariants.push({
-            sku,
-            product_id: item.product_id,
-            variant_id: item.variant_id,
-            title: item.title,
-            color: item.variant_title.split(' / ')[1],
-            size: item.variant_title.split(' / ')[0],
-            quantity: item.quantity,
-            metafieldValue: metaValue,
-          });
-        } else {
-          skuVariants[variantIndex].quantity += item.quantity;
-        }
+    const newList = [];
+    aggregatedData.forEach(item => {
+      // Trier les tailles selon l'ordre défini
+      const sortedSizes = Object.entries(item.sizes).sort((a, b) => sizesOrder.indexOf(a[0]) - sizesOrder.indexOf(b[0]));
+      sortedSizes.forEach(([size, quantity]) => {
+        newList.push({
+          ...item,
+          size,
+          quantity,
+        });
       });
     });
+    setFlatVariantList(newList);
+  }, [aggregatedData]);
 
-    setVariants(skuVariants);
-  }, [session, orders, metafields]);
-
+  const [currentIndex, setCurrentIndex] = useState(0);
   const goToPreviousVariant = () => setCurrentIndex(prevIndex => Math.max(0, prevIndex - 1));
-  const goToNextVariant = () => setCurrentIndex(prevIndex => Math.min(variants.length - 1, prevIndex + 1));
+  const goToNextVariant = () => setCurrentIndex(prevIndex => Math.min(flatVariantList.length - 1, prevIndex + 1));
 
-  const currentVariant = variants[currentIndex];
+  const currentVariant = flatVariantList[currentIndex] || {};
 
   return (
     <div className="picking-screen">
-      <Link to={`/sessions/details/${sessionId}`} className="back-link">Retour vers détails de la session</Link>
+      <Link to="/sessions" className="back-link">Retour vers la liste des sessions</Link>
       <div className="navigation-buttons">
         <button className="navigation-button" onClick={goToPreviousVariant} disabled={currentIndex === 0}>←</button>
-        <span className="variant-index">{currentIndex + 1} / {variants.length}</span>
-        <button className="navigation-button" onClick={goToNextVariant} disabled={currentIndex === variants.length - 1}>→</button>
+        <span className="variant-index">{currentIndex + 1} / {flatVariantList.length}</span>
+        <button className="navigation-button" onClick={goToNextVariant} disabled={currentIndex >= flatVariantList.length - 1}>→</button>
       </div>
-      {currentVariant && (
-        <div className="variant-details">
-          <h1>{currentVariant.title}</h1>
-          <h2 className="metafield">{currentVariant.metafieldValue}</h2>
-          <p className="color">{currentVariant.color}</p>
-          <p className="size">Taille {currentVariant.size}</p>
-          <p className="quantity">x {currentVariant.quantity}</p>
-        </div>
-      )}
+      <div className="variant-details">
+        <h1>{currentVariant.product}</h1>
+        <h2 className="metafield">{currentVariant.metafield}</h2>
+        <p className="color">{currentVariant.color}</p>
+        <p className="size">{currentVariant.size}</p>
+        <p className="quantity">x {currentVariant.quantity}</p>
+      </div>
       <div className="validation-buttons">
         <button className="problem-button" onClick={goToNextVariant}>Problème</button>
         <button className="validation-button" onClick={goToNextVariant}>OK</button>
