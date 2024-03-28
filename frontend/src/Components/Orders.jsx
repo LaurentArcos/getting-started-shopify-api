@@ -28,7 +28,7 @@ const Orders = () => {
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage, setOrdersPerPage] = useState(50);
+  const [ordersPerPage, setOrdersPerPage] = useState(5);
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");

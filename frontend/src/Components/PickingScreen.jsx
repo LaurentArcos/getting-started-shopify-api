@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { DataContext } from "../utils/dataContext";
 import { useSessions } from "../utils/sessionContext";
 
+
 const PickingScreen = () => {
   const { orders, metafields } = useContext(DataContext);
   const { name } = useParams();
@@ -21,11 +22,10 @@ const PickingScreen = () => {
     let skuVariants = [];
     sessionOrders.forEach(order => {
       order.line_items.forEach(item => {
-        // Utiliser le SKU comme identifiant unique pour chaque variante
+        
         const sku = item.sku;
         const metaValue = metafields[item.product_id] || 'Non spécifié';
 
-        // Vérifier si le variant du produit (identifié par le SKU) a déjà été ajouté
         const variantIndex = skuVariants.findIndex(v => v.sku === sku);
         if (variantIndex === -1) {
           skuVariants.push({
