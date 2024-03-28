@@ -4,12 +4,14 @@ import { useSessionSelection } from '../utils/sessionSelectionContext';
 import { useSessions } from "../utils/sessionContext";
 import { useNavigate } from 'react-router-dom';
 import { useAggregatedData } from '../utils/useAggregatedData';
+import { useProblems } from "../utils/problemContext";
 
 const Preparation = () => {
   const { sessions } = useSessions();
   const { selectedPickingSessionId, selectSession } = useSessionSelection();
   const { orders, metafields, fetchMetafieldsForProduct, } = useContext(DataContext);
   const navigate = useNavigate();
+  const { problems } = useProblems();
 
   const session = sessions.find(session => session.id === selectedPickingSessionId);
   const sessionOrderIds = session ? session.orderIds : [];
@@ -68,15 +70,20 @@ const Preparation = () => {
         </thead>
         <tbody>
         {displayData.map((item, index) => {
-            const isFirstOfGroup = index === 0 || displayData[index - 1].metafield !== item.metafield || displayData[index - 1].product !== item.product;
-            return (
-              <tr key={index}>
+          const isFirstOfGroup = index === 0 || displayData[index - 1].metafield !== item.metafield || displayData[index - 1].product !== item.product;
+          return (
+            <tr key={index} >
                 {isFirstOfGroup && <td rowSpan={item.rowSpan}>{item.metafield}</td>}
                 {isFirstOfGroup && <td rowSpan={item.rowSpan}>{item.product}</td>}
               <td className="size-column">{item.color}</td>
-              {["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"].map(size => (
-                <td className="size-column" key={size}>{item.sizes[size] || ''}</td>
-              ))}
+              {["NO SIZE", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"].map(size => {
+                  const isProblematicVariant = problems.some(problem => problem.sku === item.sku && problem.size === size);
+                  return (
+                    <td key={size} style={{ backgroundColor: isProblematicVariant ? 'red' : 'white' }} className="size-column">
+                      {item.sizes[size] || ''}
+                    </td>
+                  );
+                })}
               <td className="size-column" >{Object.values(item.sizes).reduce((acc, qty) => acc + qty, 0)}</td>
               </tr>
             );

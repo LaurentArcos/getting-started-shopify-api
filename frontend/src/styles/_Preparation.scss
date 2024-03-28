@@ -1,12 +1,13 @@
 @use 'vars';
 
 .table-preparation td {
-  background-color: white;
   border: 1px solid #ccc;
+  background-color: white;
 }
 
-.problematic-row {
-  background-color: red;
+.table-preparation th {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
 .size-column {

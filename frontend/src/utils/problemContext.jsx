@@ -6,18 +6,20 @@ const ProblemContext = createContext();
 export const useProblems = () => useContext(ProblemContext);
 
 export const ProblemProvider = ({ children }) => {
-  const [problematicItems, setProblematicItems] = useState([]);
+  const [problems, setProblems] = useState([]);
 
-  const reportProblem = (sku) => {
-    setProblematicItems(prevItems => [...prevItems, sku]);
+  const addProblem = (problemVariant) => {
+    if (!problems.find((p) => p.sku === problemVariant.sku && p.size === problemVariant.size)) {
+      setProblems([...problems, problemVariant]);
+    }
   };
 
-  const isItemProblematic = (sku) => {
-    return problematicItems.includes(sku);
+  const isProblematic = (sku, size) => {
+    return problems.some(problem => problem.sku === sku && problem.size === size);
   };
 
   return (
-    <ProblemContext.Provider value={{ problematicItems, reportProblem, isItemProblematic }}>
+    <ProblemContext.Provider value={{ problems, addProblem, isProblematic }}>
       {children}
     </ProblemContext.Provider>
   );
